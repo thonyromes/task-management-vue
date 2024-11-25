@@ -90,18 +90,19 @@
         <tr
           v-for="task in store.filteredAndSortedTasks"
           :key="task.id"
-          @click="openTaskDetails(task.id)"
           class="clickable"
         >
-          <td>{{ task.title }}</td>
-          <td>{{ task.description }}</td>
-          <td>
+          <td @click="navigateToTask(task.id)">{{ task.title }}</td>
+          <td @click="navigateToTask(task.id)">{{ task.description }}</td>
+          <td @click="navigateToTask(task.id)">
             <StatusBadge :status="task.status" />
           </td>
-          <td>
+          <td @click="navigateToTask(task.id)">
             <PriorityBadge :priority="task.priority" />
           </td>
-          <td>{{ formatDate(task.dueDate) }}</td>
+          <td @click="navigateToTask(task.id)">
+            {{ formatDate(task.dueDate) }}
+          </td>
           <td class="actions">
             <button @click="$emit('edit', task)" class="edit">Edit</button>
             <button @click="openDeleteModal(task.id)" class="delete">
@@ -188,9 +189,12 @@ import {
   Task,
 } from "@/types/task";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import ConfirmModal from "./ConfirmModal.vue";
 import TaskDetails from "./TaskDetails.vue";
 import TaskModal from "./TaskModal.vue";
+
+const router = useRouter();
 
 const store = useTaskStore();
 const searchQuery = ref("");
@@ -243,6 +247,10 @@ const handleSaveTask = async (taskData: Partial<Task>) => {
   }
 };
 
+const navigateToTask = (taskId: number) => {
+  router.push({ name: "task-details", params: { id: taskId.toString() } });
+};
+
 const openDeleteModal = (taskId: number) => {
   taskToDelete.value = taskId;
   showDeleteModal.value = true;
@@ -263,10 +271,10 @@ const confirmDelete = async () => {
 const showDetailsModal = ref(false);
 const selectedTaskId = ref<number | undefined>(undefined);
 
-const openTaskDetails = (taskId: number) => {
-  selectedTaskId.value = taskId;
-  showDetailsModal.value = true;
-};
+// const openTaskDetails = (taskId: number) => {
+//   selectedTaskId.value = taskId;
+//   showDetailsModal.value = true;
+// };
 
 const closeTaskDetails = () => {
   showDetailsModal.value = false;

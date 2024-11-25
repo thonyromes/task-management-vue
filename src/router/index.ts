@@ -1,5 +1,5 @@
-import TaskDetails from "@/components/TaskDetails.vue";
 import Dashboard from "@/views/Dashboard.vue";
+import TaskDetailsView from "@/views/TaskDetailsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -13,7 +13,7 @@ const router = createRouter({
     {
       path: "/task/:id",
       name: "task-details",
-      component: TaskDetails,
+      component: TaskDetailsView,
       props: true,
     },
     {
