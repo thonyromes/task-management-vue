@@ -180,10 +180,8 @@ export const useTaskStore = defineStore("tasks", {
       try {
         this.loading = true;
         this.error = undefined;
-
         const task = await api.getTaskDetails(id);
-        const subtasks = await api.getSubtasks(id);
-        return { ...task, subtasks };
+        return task;
       } catch (error) {
         this.error =
           error instanceof Error
@@ -196,7 +194,12 @@ export const useTaskStore = defineStore("tasks", {
     },
     async createSubtask(taskId: number, title: string): Promise<Subtask> {
       try {
-        return await api.createSubtask(taskId, title);
+        const newSubtask = await api.createSubtask(taskId, title);
+        const task = this.tasks.find((t) => t.id === taskId);
+        if (task) {
+          task.subtasks.push(newSubtask);
+        }
+        return newSubtask;
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : "Failed to create subtask";
@@ -210,6 +213,13 @@ export const useTaskStore = defineStore("tasks", {
     ): Promise<void> {
       try {
         await api.toggleSubtask(taskId, subtaskId, completed);
+        const task = this.tasks.find((t) => t.id === taskId);
+        if (task) {
+          const subtask = task.subtasks.find((st) => st.id === subtaskId);
+          if (subtask) {
+            subtask.completed = completed;
+          }
+        }
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : "Failed to update subtask";
@@ -219,6 +229,10 @@ export const useTaskStore = defineStore("tasks", {
     async deleteSubtask(taskId: number, subtaskId: number): Promise<void> {
       try {
         await api.deleteSubtask(taskId, subtaskId);
+        const task = this.tasks.find((t) => t.id === taskId);
+        if (task) {
+          task.subtasks = task.subtasks.filter((st) => st.id !== subtaskId);
+        }
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : "Failed to delete subtask";

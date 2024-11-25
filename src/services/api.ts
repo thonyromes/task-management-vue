@@ -32,11 +32,11 @@ const mapTodoToTask = (todo: TodoResponse): Task => {
   return {
     id: todo.id,
     title: todo.title,
-    description: `Task ${todo.id}: ${todo.title}`, // More meaningful description
+    description: `Task ${todo.id}: ${todo.title}`,
     status,
     priority: PRIORITIES[todo.id % PRIORITIES.length],
-    dueDate: new Date(Date.now() + todo.id * 24 * 60 * 60 * 1000).toISOString(), // Spread out due dates
-    subtasks: [], // Initialize empty subtasks array
+    dueDate: new Date(Date.now() + todo.id * 24 * 60 * 60 * 1000).toISOString(),
+    subtasks: mockSubtasks[todo.id] || [],
   };
 };
 
@@ -45,6 +45,9 @@ interface TasksResponse {
   data: Task[];
   total: number;
 }
+
+// Add this mock data at the top of the file
+const mockSubtasks: Record<number, Subtask[]> = {};
 
 export const api = {
   async getTasks(
@@ -115,30 +118,29 @@ export const api = {
       throw new Error("Failed to fetch task details");
     }
     const todo: TodoResponse = await response.json();
-    return mapTodoToTask(todo);
+    const task = mapTodoToTask(todo);
+    task.subtasks = mockSubtasks[id] || [];
+    return task;
   },
 
   async getSubtasks(taskId: number): Promise<Subtask[]> {
-    const response = await fetch(`${BASE_URL}/todos/${taskId}/subtasks`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch subtasks");
-    }
-    return await response.json();
+    // Return mock subtasks if they exist, otherwise return empty array
+    return mockSubtasks[taskId] || [];
   },
 
   async createSubtask(taskId: number, title: string): Promise<Subtask> {
-    const response = await fetch(`${BASE_URL}/todos/${taskId}/subtasks`, {
-      method: "POST",
-      body: JSON.stringify({
-        taskId,
-        title,
-        completed: false,
-      }),
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-    return await response.json();
+    const newSubtask: Subtask = {
+      id: Date.now(),
+      taskId,
+      title,
+      completed: false,
+    };
+
+    if (!mockSubtasks[taskId]) {
+      mockSubtasks[taskId] = [];
+    }
+    mockSubtasks[taskId].push(newSubtask);
+    return newSubtask;
   },
 
   async toggleSubtask(
@@ -146,18 +148,17 @@ export const api = {
     subtaskId: number,
     completed: boolean,
   ): Promise<void> {
-    await fetch(`${BASE_URL}/todos/${taskId}/subtasks/${subtaskId}`, {
-      method: "PATCH",
-      body: JSON.stringify({ completed }),
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
+    const subtask = mockSubtasks[taskId]?.find((st) => st.id === subtaskId);
+    if (subtask) {
+      subtask.completed = completed;
+    }
   },
 
   async deleteSubtask(taskId: number, subtaskId: number): Promise<void> {
-    await fetch(`${BASE_URL}/todos/${taskId}/subtasks/${subtaskId}`, {
-      method: "DELETE",
-    });
+    if (mockSubtasks[taskId]) {
+      mockSubtasks[taskId] = mockSubtasks[taskId].filter(
+        (st) => st.id !== subtaskId,
+      );
+    }
   },
 };
