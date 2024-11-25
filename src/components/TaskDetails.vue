@@ -98,6 +98,7 @@
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import PriorityBadge from "./PriorityBadge.vue";
 import StatusBadge from "./StatusBadge.vue";
 
@@ -116,6 +117,7 @@ const task = ref<Task | undefined>(undefined);
 const loading = ref(false);
 const error = ref<string | undefined>(undefined);
 const newSubtaskTitle = ref("");
+const router = useRouter();
 
 const loadTaskDetails = async () => {
   if (!props.taskId) {
@@ -136,7 +138,7 @@ const loadTaskDetails = async () => {
 };
 
 const handleClose = () => {
-  emit("close");
+  router.push({ name: "dashboard" });
 };
 
 const handleEdit = () => {
