@@ -56,7 +56,9 @@
     <!-- Error State -->
     <div v-else-if="store.error" class="error">
       {{ store.error }}
-      <button @click="store.fetchTasks()">Retry</button>
+      <button @click="store.fetchTasks(currentPage, itemsPerPage)">
+        Retry
+      </button>
     </div>
 
     <!-- Tasks Table -->
@@ -128,18 +130,15 @@
     <!-- Pagination -->
     <div class="pagination">
       <button
-        :disabled="store.pagination.currentPage === 1"
-        @click="changePage(store.pagination.currentPage - 1)"
+        :disabled="currentPage === 1"
+        @click="changePage(currentPage - 1)"
       >
         Previous
       </button>
-      <span
-        >Page {{ store.pagination.currentPage }} of
-        {{ store.pagination.totalPages }}</span
-      >
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
       <button
-        :disabled="store.pagination.currentPage === store.pagination.totalPages"
-        @click="changePage(store.pagination.currentPage + 1)"
+        :disabled="currentPage === totalPages"
+        @click="changePage(currentPage + 1)"
       >
         Next
       </button>
@@ -179,12 +178,13 @@ import {
   STATUSES,
   Task,
 } from "@/types/task";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import ConfirmModal from "./ConfirmModal.vue";
 import TaskModal from "./TaskModal.vue";
 
 const router = useRouter();
+const route = useRoute();
 
 const store = useTaskStore();
 const searchQuery = ref("");
@@ -195,8 +195,19 @@ const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();
 };
 
+const itemsPerPage = 10;
+const totalItems = ref(0);
+
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage));
+const currentPage = computed(() => Number(route.query.page) || 1);
+
 const changePage = (page: number) => {
-  store.fetchTasks(page);
+  router.push({
+    query: {
+      ...route.query,
+      page: page.toString(),
+    },
+  });
 };
 
 const handleSearch = () => {
@@ -265,6 +276,16 @@ const closeTaskDetails = () => {
   showDetailsModal.value = false;
   selectedTaskId.value = undefined;
 };
+
+watch(
+  () => route.query.page,
+  async (newPage) => {
+    const page = Number(newPage) || 1;
+    const response = await store.fetchTasks(page, itemsPerPage);
+    totalItems.value = response.total * itemsPerPage;
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped>

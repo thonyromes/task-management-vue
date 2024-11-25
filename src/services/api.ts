@@ -40,6 +40,12 @@ const mapTodoToTask = (todo: TodoResponse): Task => {
   };
 };
 
+// Update the getTasks response type if needed
+interface TasksResponse {
+  data: Task[];
+  total: number;
+}
+
 export const api = {
   async getTasks(
     page: number = 1,

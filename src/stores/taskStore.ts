@@ -33,11 +33,6 @@ export const useTaskStore = defineStore("tasks", {
       field: undefined as SortableTaskField | undefined,
       direction: "asc" as "asc" | "desc",
     } as SortConfig,
-    pagination: {
-      currentPage: 1,
-      totalPages: 1,
-      pageSize: 10,
-    },
   }),
 
   getters: {
@@ -104,19 +99,18 @@ export const useTaskStore = defineStore("tasks", {
     setFilters(filters: Partial<TaskFilters>) {
       this.filters = { ...this.filters, ...filters };
     },
-    async fetchTasks(page?: number) {
+    async fetchTasks(page: number, perPage: number) {
+      this.loading = true;
+      this.error = undefined;
       try {
-        this.loading = true;
-        this.error = undefined;
-        const { tasks, totalPages } = await api.getTasks(
-          page || this.pagination.currentPage,
-        );
-        this.tasks = tasks;
-        this.pagination.totalPages = totalPages;
-        return tasks;
+        const response = await api.getTasks(page, perPage);
+        this.tasks = response.tasks;
+        return {
+          total: response.tasks.length,
+          data: response.tasks,
+        };
       } catch (error) {
-        this.error =
-          error instanceof Error ? error.message : "Failed to fetch tasks";
+        this.error = "Failed to fetch tasks";
         throw error;
       } finally {
         this.loading = false;
