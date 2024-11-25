@@ -28,12 +28,12 @@ import { ref } from "vue";
 const store = useTaskStore();
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
-const editingTask = ref<Task | null>(null);
+const editingTask = ref<Task | undefined>();
 
 const closeModal = () => {
   showCreateModal.value = false;
   showEditModal.value = false;
-  editingTask.value = null;
+  editingTask.value = undefined;
 };
 
 const handleEdit = (task: Task) => {

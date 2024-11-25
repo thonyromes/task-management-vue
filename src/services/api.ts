@@ -48,7 +48,7 @@ export const api = {
     const response = await fetch(
       `${BASE_URL}/todos?_start=${start}&_limit=${limit}`,
     );
-    const totalCount = response.headers.get("x-total-count");
+    const totalCount = response.headers.get("x-total-count") || "0";
     const todos: TodoResponse[] = await response.json();
 
     return {
@@ -100,5 +100,14 @@ export const api = {
     await fetch(`${BASE_URL}/todos/${id}`, {
       method: "DELETE",
     });
+  },
+
+  async getTaskDetails(id: number): Promise<Task> {
+    const response = await fetch(`${BASE_URL}/todos/${id}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch task details");
+    }
+    const todo: TodoResponse = await response.json();
+    return mapTodoToTask(todo);
   },
 };

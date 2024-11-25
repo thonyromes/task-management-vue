@@ -9,7 +9,7 @@ interface TaskFilters {
 }
 
 interface SortConfig {
-  field: keyof Task | null;
+  field: keyof Task | undefined;
   direction: "asc" | "desc";
 }
 
@@ -17,14 +17,14 @@ export const useTaskStore = defineStore("tasks", {
   state: () => ({
     tasks: [] as Task[],
     loading: false,
-    error: null as string | null,
+    error: undefined as string | undefined,
     filters: {
       status: "All",
       priority: "All",
       search: "",
     } as TaskFilters,
     sort: {
-      field: null as keyof Task | null,
+      field: undefined as keyof Task | undefined,
       direction: "asc" as "asc" | "desc",
     } as SortConfig,
     pagination: {
@@ -57,7 +57,7 @@ export const useTaskStore = defineStore("tasks", {
       }
 
       // Apply sorting
-      if (state.sort.field !== null) {
+      if (state.sort.field !== undefined) {
         result.sort((a, b) => {
           const aValue = a[state.sort.field!];
           const bValue = b[state.sort.field!];
@@ -86,6 +86,7 @@ export const useTaskStore = defineStore("tasks", {
     async fetchTasks(page?: number) {
       try {
         this.loading = true;
+        this.error = undefined;
         const { tasks, totalPages } = await api.getTasks(
           page || this.pagination.currentPage,
         );
@@ -160,6 +161,29 @@ export const useTaskStore = defineStore("tasks", {
         // If clicking a new field, set it and default to ascending
         this.sort.field = field;
         this.sort.direction = "asc";
+      }
+    },
+    async getTaskDetails(id: number): Promise<Task> {
+      try {
+        this.loading = true;
+        this.error = undefined;
+
+        // First try to find in existing tasks
+        const existingTask = this.tasks.find((task) => task.id === id);
+        if (existingTask) {
+          return existingTask;
+        }
+
+        // If not found, fetch from API
+        return await api.getTaskDetails(id);
+      } catch (error) {
+        this.error =
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch task details";
+        throw error;
+      } finally {
+        this.loading = false;
       }
     },
   },

@@ -96,7 +96,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="task in store.filteredAndSortedTasks" :key="task.id">
+        <tr
+          v-for="task in store.filteredAndSortedTasks"
+          :key="task.id"
+          @click="openTaskDetails(task.id)"
+          class="clickable"
+        >
           <td>{{ task.title }}</td>
           <td>{{ task.description }}</td>
           <td>
@@ -167,6 +172,15 @@
       @close="closeDeleteModal"
       @confirm="confirmDelete"
     />
+
+    <!-- Task Details Modal -->
+    <TaskDetails
+      v-if="showDetailsModal"
+      :taskId="selectedTaskId"
+      @close="closeTaskDetails"
+      @edit="openTaskModal"
+      @delete="openDeleteModal"
+    />
   </div>
 </template>
 
@@ -184,6 +198,7 @@ import {
 } from "@/types/task";
 import { ref } from "vue";
 import ConfirmModal from "./ConfirmModal.vue";
+import TaskDetails from "./TaskDetails.vue";
 import TaskModal from "./TaskModal.vue";
 
 const store = useTaskStore();
@@ -256,6 +271,19 @@ const confirmDelete = async () => {
     await store.deleteTask(taskToDelete.value);
     closeDeleteModal();
   }
+};
+
+const showDetailsModal = ref(false);
+const selectedTaskId = ref<number | undefined>(undefined);
+
+const openTaskDetails = (taskId: number) => {
+  selectedTaskId.value = taskId;
+  showDetailsModal.value = true;
+};
+
+const closeTaskDetails = () => {
+  showDetailsModal.value = false;
+  selectedTaskId.value = undefined;
 };
 </script>
 

@@ -21,3 +21,8 @@ export interface Task {
   priority: TaskPriority;
   dueDate: string;
 }
+
+export interface SortConfig {
+  field: keyof Task | undefined;
+  direction: "asc" | "desc";
+}
