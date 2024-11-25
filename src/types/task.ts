@@ -13,6 +13,13 @@ export interface TaskFilters {
   search: string;
 }
 
+export interface Subtask {
+  id: number;
+  taskId: number;
+  title: string;
+  completed: boolean;
+}
+
 export interface Task {
   id: number;
   title: string;
@@ -20,9 +27,12 @@ export interface Task {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate: string;
+  subtasks: Subtask[];
 }
 
 export interface SortConfig {
   field: keyof Task | undefined;
   direction: "asc" | "desc";
 }
+
+export type SortableTaskField = keyof Omit<Task, "subtasks">;

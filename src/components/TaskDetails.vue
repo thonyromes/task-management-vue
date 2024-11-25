@@ -47,6 +47,44 @@
           <p>{{ formatDate(task.dueDate) }}</p>
         </div>
 
+        <div class="subtasks-section">
+          <h3>Subtasks</h3>
+
+          <form @submit.prevent="handleAddSubtask" class="add-subtask-form">
+            <input
+              v-model="newSubtaskTitle"
+              type="text"
+              placeholder="New subtask..."
+              required
+            />
+            <button type="submit">Add</button>
+          </form>
+
+          <div v-if="task.subtasks.length" class="subtasks-list">
+            <div
+              v-for="subtask in task.subtasks"
+              :key="subtask.id"
+              class="subtask-item"
+            >
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  :checked="subtask.completed"
+                  @change="toggleSubtask(subtask.id, !subtask.completed)"
+                />
+                <span :class="{ completed: subtask.completed }">
+                  {{ subtask.title }}
+                </span>
+              </label>
+              <button class="delete-subtask" @click="deleteSubtask(subtask.id)">
+                &times;
+              </button>
+            </div>
+          </div>
+
+          <p v-else class="no-subtasks">No subtasks yet. Add one above.</p>
+        </div>
+
         <div class="actions">
           <button @click="handleEdit">Edit</button>
           <button class="danger" @click="handleDelete">Delete</button>
@@ -77,6 +115,7 @@ const store = useTaskStore();
 const task = ref<Task | undefined>(undefined);
 const loading = ref(false);
 const error = ref<string | undefined>(undefined);
+const newSubtaskTitle = ref("");
 
 const loadTaskDetails = async () => {
   if (!props.taskId) {
@@ -114,6 +153,46 @@ const handleDelete = () => {
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();
+};
+
+const handleAddSubtask = async () => {
+  if (!task.value?.id || !newSubtaskTitle.value.trim()) return;
+
+  try {
+    const subtask = await store.createSubtask(
+      task.value.id,
+      newSubtaskTitle.value.trim(),
+    );
+    task.value.subtasks.push(subtask);
+    newSubtaskTitle.value = "";
+  } catch (err) {
+    error.value = "Failed to create subtask";
+  }
+};
+
+const toggleSubtask = async (subtaskId: number, completed: boolean) => {
+  if (!task.value?.id) return;
+
+  try {
+    await store.toggleSubtask(task.value.id, subtaskId, completed);
+    const subtask = task.value.subtasks.find((s) => s.id === subtaskId);
+    if (subtask) {
+      subtask.completed = completed;
+    }
+  } catch (err) {
+    error.value = "Failed to update subtask";
+  }
+};
+
+const deleteSubtask = async (subtaskId: number) => {
+  if (!task.value?.id) return;
+
+  try {
+    await store.deleteSubtask(task.value.id, subtaskId);
+    task.value.subtasks = task.value.subtasks.filter((s) => s.id !== subtaskId);
+  } catch (err) {
+    error.value = "Failed to delete subtask";
+  }
 };
 
 onMounted(loadTaskDetails);
@@ -173,6 +252,55 @@ label {
 
 .error button:hover {
   background-color: #7f1d1d;
+}
+
+.subtasks-section {
+  margin-top: 2rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.add-subtask-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background: #f9fafb;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.delete-subtask {
+  padding: 0.25rem 0.5rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.no-subtasks {
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
 }
 
 /* ... more styles ... */

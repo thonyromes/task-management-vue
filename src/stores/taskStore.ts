@@ -1,5 +1,11 @@
 import { api } from "@/services/api";
-import type { Task, TaskPriority, TaskStatus } from "@/types/task";
+import type {
+  SortableTaskField,
+  Subtask,
+  Task,
+  TaskPriority,
+  TaskStatus,
+} from "@/types/task";
 import { defineStore } from "pinia";
 
 interface TaskFilters {
@@ -9,7 +15,7 @@ interface TaskFilters {
 }
 
 interface SortConfig {
-  field: keyof Task | undefined;
+  field: SortableTaskField | undefined;
   direction: "asc" | "desc";
 }
 
@@ -24,7 +30,7 @@ export const useTaskStore = defineStore("tasks", {
       search: "",
     } as TaskFilters,
     sort: {
-      field: undefined as keyof Task | undefined,
+      field: undefined as SortableTaskField | undefined,
       direction: "asc" as "asc" | "desc",
     } as SortConfig,
     pagination: {
@@ -57,21 +63,36 @@ export const useTaskStore = defineStore("tasks", {
       }
 
       // Apply sorting
-      if (state.sort.field !== undefined) {
+      if (state.sort.field) {
         result.sort((a, b) => {
           const aValue = a[state.sort.field!];
           const bValue = b[state.sort.field!];
-          const modifier = state.sort.direction === "asc" ? 1 : -1;
 
+          // Handle different field types
           if (state.sort.field === "dueDate") {
-            const dateA = aValue ? new Date(aValue).getTime() : 0;
-            const dateB = bValue ? new Date(bValue).getTime() : 0;
-            return (dateA - dateB) * modifier;
+            return (
+              (new Date(aValue as string).getTime() -
+                new Date(bValue as string).getTime()) *
+              (state.sort.direction === "asc" ? 1 : -1)
+            );
           }
 
-          if (aValue === undefined || aValue === null) return 1;
-          if (bValue === undefined || bValue === null) return -1;
-          return aValue > bValue ? modifier : -modifier;
+          // Handle string comparisons
+          if (typeof aValue === "string" && typeof bValue === "string") {
+            return (
+              aValue.localeCompare(bValue) *
+              (state.sort.direction === "asc" ? 1 : -1)
+            );
+          }
+
+          // Handle number comparisons
+          if (typeof aValue === "number" && typeof bValue === "number") {
+            return (
+              (aValue - bValue) * (state.sort.direction === "asc" ? 1 : -1)
+            );
+          }
+
+          return 0;
         });
       }
 
@@ -153,12 +174,10 @@ export const useTaskStore = defineStore("tasks", {
         this.loading = false;
       }
     },
-    setSort(field: keyof Task) {
+    setSort(field: SortableTaskField) {
       if (this.sort.field === field) {
-        // If clicking the same field, toggle direction
         this.sort.direction = this.sort.direction === "asc" ? "desc" : "asc";
       } else {
-        // If clicking a new field, set it and default to ascending
         this.sort.field = field;
         this.sort.direction = "asc";
       }
@@ -168,14 +187,9 @@ export const useTaskStore = defineStore("tasks", {
         this.loading = true;
         this.error = undefined;
 
-        // First try to find in existing tasks
-        const existingTask = this.tasks.find((task) => task.id === id);
-        if (existingTask) {
-          return existingTask;
-        }
-
-        // If not found, fetch from API
-        return await api.getTaskDetails(id);
+        const task = await api.getTaskDetails(id);
+        const subtasks = await api.getSubtasks(id);
+        return { ...task, subtasks };
       } catch (error) {
         this.error =
           error instanceof Error
@@ -184,6 +198,37 @@ export const useTaskStore = defineStore("tasks", {
         throw error;
       } finally {
         this.loading = false;
+      }
+    },
+    async createSubtask(taskId: number, title: string): Promise<Subtask> {
+      try {
+        return await api.createSubtask(taskId, title);
+      } catch (error) {
+        this.error =
+          error instanceof Error ? error.message : "Failed to create subtask";
+        throw error;
+      }
+    },
+    async toggleSubtask(
+      taskId: number,
+      subtaskId: number,
+      completed: boolean,
+    ): Promise<void> {
+      try {
+        await api.toggleSubtask(taskId, subtaskId, completed);
+      } catch (error) {
+        this.error =
+          error instanceof Error ? error.message : "Failed to update subtask";
+        throw error;
+      }
+    },
+    async deleteSubtask(taskId: number, subtaskId: number): Promise<void> {
+      try {
+        await api.deleteSubtask(taskId, subtaskId);
+      } catch (error) {
+        this.error =
+          error instanceof Error ? error.message : "Failed to delete subtask";
+        throw error;
       }
     },
   },

@@ -63,34 +63,25 @@
     <table v-else>
       <thead>
         <tr>
-          <th @click="sort('title')" class="sortable">
+          <th @click="store.setSort('title')">
             Title
-            <SortIndicator
-              :active="store.sort.field === 'title'"
-              :direction="store.sort.direction"
-            />
+            <SortIcon field="title" />
           </th>
-          <th>Description</th>
-          <th @click="sort('status')" class="sortable">
+          <th @click="store.setSort('description')">
+            Description
+            <SortIcon field="description" />
+          </th>
+          <th @click="store.setSort('status')">
             Status
-            <SortIndicator
-              :active="store.sort.field === 'status'"
-              :direction="store.sort.direction"
-            />
+            <SortIcon field="status" />
           </th>
-          <th @click="sort('priority')" class="sortable">
+          <th @click="store.setSort('priority')">
             Priority
-            <SortIndicator
-              :active="store.sort.field === 'priority'"
-              :direction="store.sort.direction"
-            />
+            <SortIcon field="priority" />
           </th>
-          <th @click="sort('dueDate')" class="sortable">
+          <th @click="store.setSort('dueDate')">
             Due Date
-            <SortIndicator
-              :active="store.sort.field === 'dueDate'"
-              :direction="store.sort.direction"
-            />
+            <SortIcon field="dueDate" />
           </th>
           <th>Actions</th>
         </tr>
@@ -186,7 +177,7 @@
 
 <script setup lang="ts">
 import PriorityBadge from "@/components/PriorityBadge.vue";
-import SortIndicator from "@/components/SortIndicator.vue";
+import SortIcon from "@/components/SortIcon.vue";
 import StatusBadge from "@/components/StatusBadge.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import {
@@ -216,10 +207,6 @@ const changePage = (page: number) => {
 
 const handleSearch = () => {
   store.setFilters({ search: searchQuery.value });
-};
-
-const sort = (field: keyof Task) => {
-  store.setSort(field);
 };
 
 const showTaskModal = ref(false);

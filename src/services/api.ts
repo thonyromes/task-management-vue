@@ -1,4 +1,4 @@
-import { PRIORITIES, Task, TaskStatus } from "@/types/task";
+import { PRIORITIES, Subtask, Task, TaskStatus } from "@/types/task";
 
 const BASE_URL = "https://jsonplaceholder.typicode.com";
 
@@ -36,6 +36,7 @@ const mapTodoToTask = (todo: TodoResponse): Task => {
     status,
     priority: PRIORITIES[todo.id % PRIORITIES.length],
     dueDate: new Date(Date.now() + todo.id * 24 * 60 * 60 * 1000).toISOString(), // Spread out due dates
+    subtasks: [], // Initialize empty subtasks array
   };
 };
 
@@ -109,5 +110,48 @@ export const api = {
     }
     const todo: TodoResponse = await response.json();
     return mapTodoToTask(todo);
+  },
+
+  async getSubtasks(taskId: number): Promise<Subtask[]> {
+    const response = await fetch(`${BASE_URL}/todos/${taskId}/subtasks`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch subtasks");
+    }
+    return await response.json();
+  },
+
+  async createSubtask(taskId: number, title: string): Promise<Subtask> {
+    const response = await fetch(`${BASE_URL}/todos/${taskId}/subtasks`, {
+      method: "POST",
+      body: JSON.stringify({
+        taskId,
+        title,
+        completed: false,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    return await response.json();
+  },
+
+  async toggleSubtask(
+    taskId: number,
+    subtaskId: number,
+    completed: boolean,
+  ): Promise<void> {
+    await fetch(`${BASE_URL}/todos/${taskId}/subtasks/${subtaskId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ completed }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+  },
+
+  async deleteSubtask(taskId: number, subtaskId: number): Promise<void> {
+    await fetch(`${BASE_URL}/todos/${taskId}/subtasks/${subtaskId}`, {
+      method: "DELETE",
+    });
   },
 };
