@@ -164,15 +164,6 @@
       @close="closeDeleteModal"
       @confirm="confirmDelete"
     />
-
-    <!-- Task Details Modal -->
-    <TaskDetails
-      v-if="showDetailsModal"
-      :taskId="selectedTaskId"
-      @close="closeTaskDetails"
-      @edit="openTaskModal"
-      @delete="openDeleteModal"
-    />
   </div>
 </template>
 
@@ -191,7 +182,6 @@ import {
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import ConfirmModal from "./ConfirmModal.vue";
-import TaskDetails from "./TaskDetails.vue";
 import TaskModal from "./TaskModal.vue";
 
 const router = useRouter();
@@ -270,11 +260,6 @@ const confirmDelete = async () => {
 
 const showDetailsModal = ref(false);
 const selectedTaskId = ref<number | undefined>(undefined);
-
-// const openTaskDetails = (taskId: number) => {
-//   selectedTaskId.value = taskId;
-//   showDetailsModal.value = true;
-// };
 
 const closeTaskDetails = () => {
   showDetailsModal.value = false;

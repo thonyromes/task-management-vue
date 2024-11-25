@@ -9,6 +9,12 @@ const router = createRouter({
       path: "/",
       name: "dashboard",
       component: Dashboard,
+      props: (route) => ({
+        page: Number(route.query.page) || 1,
+        status: route.query.status || "All",
+        priority: route.query.priority || "All",
+        search: route.query.search || "",
+      }),
     },
     {
       path: "/task/:id",
