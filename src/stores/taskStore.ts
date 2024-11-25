@@ -1,18 +1,16 @@
 import { api } from "@/services/api";
+import type { Task, TaskPriority, TaskStatus } from "@/types/task";
 import { defineStore } from "pinia";
 
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  status: "Pending" | "In Progress" | "Completed";
-  priority: "Low" | "Medium" | "High";
-  dueDate: string;
+interface TaskFilters {
+  status: TaskStatus | "All";
+  priority: TaskPriority | "All";
+  search: string;
 }
 
-interface TaskFilters {
-  status: "All" | "Pending" | "In Progress" | "Completed";
-  priority: "All" | "Low" | "Medium" | "High";
+interface SortConfig {
+  field: keyof Task | null;
+  direction: "asc" | "desc";
 }
 
 export const useTaskStore = defineStore("tasks", {
@@ -21,10 +19,14 @@ export const useTaskStore = defineStore("tasks", {
     loading: false,
     error: null as string | null,
     filters: {
-      status: "All" as TaskFilters["status"],
-      priority: "All" as TaskFilters["priority"],
-    },
-    sortOrder: "asc" as "asc" | "desc",
+      status: "All",
+      priority: "All",
+      search: "",
+    } as TaskFilters,
+    sort: {
+      field: null as keyof Task | null,
+      direction: "asc" as "asc" | "desc",
+    } as SortConfig,
     pagination: {
       currentPage: 1,
       totalPages: 1,
@@ -33,23 +35,47 @@ export const useTaskStore = defineStore("tasks", {
   }),
 
   getters: {
-    filteredTasks: (state) => {
-      return [...state.tasks]
-        .filter(
+    filteredAndSortedTasks: (state) => {
+      let result = [...state.tasks];
+
+      // Apply filters
+      if (state.filters.status !== "All") {
+        result = result.filter((task) => task.status === state.filters.status);
+      }
+      if (state.filters.priority !== "All") {
+        result = result.filter(
+          (task) => task.priority === state.filters.priority,
+        );
+      }
+      if (state.filters.search) {
+        const searchLower = state.filters.search.toLowerCase();
+        result = result.filter(
           (task) =>
-            state.filters.status === "All" ||
-            task.status === state.filters.status,
-        )
-        .filter(
-          (task) =>
-            state.filters.priority === "All" ||
-            task.priority === state.filters.priority,
-        )
-        .sort((a, b) => {
-          const dateA = new Date(a.dueDate).getTime();
-          const dateB = new Date(b.dueDate).getTime();
-          return state.sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+            task.title.toLowerCase().includes(searchLower) ||
+            task.description.toLowerCase().includes(searchLower),
+        );
+      }
+
+      // Apply sorting
+      if (state.sort.field !== null) {
+        result.sort((a, b) => {
+          const aValue = a[state.sort.field!];
+          const bValue = b[state.sort.field!];
+          const modifier = state.sort.direction === "asc" ? 1 : -1;
+
+          if (state.sort.field === "dueDate") {
+            const dateA = aValue ? new Date(aValue).getTime() : 0;
+            const dateB = bValue ? new Date(bValue).getTime() : 0;
+            return (dateA - dateB) * modifier;
+          }
+
+          if (aValue === undefined || aValue === null) return 1;
+          if (bValue === undefined || bValue === null) return -1;
+          return aValue > bValue ? modifier : -modifier;
         });
+      }
+
+      return result;
     },
   },
 
@@ -60,18 +86,16 @@ export const useTaskStore = defineStore("tasks", {
     async fetchTasks(page?: number) {
       try {
         this.loading = true;
-        const newPage = page || this.pagination.currentPage;
         const { tasks, totalPages } = await api.getTasks(
-          newPage,
-          this.pagination.pageSize,
+          page || this.pagination.currentPage,
         );
-
         this.tasks = tasks;
-        this.pagination.currentPage = newPage;
         this.pagination.totalPages = totalPages;
+        return tasks;
       } catch (error) {
         this.error =
           error instanceof Error ? error.message : "Failed to fetch tasks";
+        throw error;
       } finally {
         this.loading = false;
       }
@@ -81,8 +105,6 @@ export const useTaskStore = defineStore("tasks", {
       try {
         this.loading = true;
         const newTask = await api.createTask(taskData);
-        // Note: JSONPlaceholder doesn't actually create new items,
-        // so we're simulating it by adding to the local state
         this.tasks.unshift(newTask);
         return newTask;
       } catch (error) {
@@ -94,7 +116,7 @@ export const useTaskStore = defineStore("tasks", {
       }
     },
 
-    async updateTask(task: Task) {
+    async updateTask(task: Task): Promise<Task | undefined> {
       try {
         this.loading = true;
         const updatedTask = await api.updateTask(task);
@@ -112,16 +134,15 @@ export const useTaskStore = defineStore("tasks", {
       }
     },
     toggleSortOrder() {
-      this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
+      this.sort = {
+        ...this.sort,
+        direction: this.sort.direction === "asc" ? "desc" : "asc",
+      };
     },
-    async deleteTask(id: number) {
+    async deleteTask(id: number): Promise<void> {
       try {
         this.loading = true;
-        await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
-          method: "DELETE",
-        });
-
-        // Remove task from local state
+        await api.deleteTask(id);
         this.tasks = this.tasks.filter((task) => task.id !== id);
       } catch (error) {
         this.error =
@@ -129,6 +150,16 @@ export const useTaskStore = defineStore("tasks", {
         throw error;
       } finally {
         this.loading = false;
+      }
+    },
+    setSort(field: keyof Task) {
+      if (this.sort.field === field) {
+        // If clicking the same field, toggle direction
+        this.sort.direction = this.sort.direction === "asc" ? "desc" : "asc";
+      } else {
+        // If clicking a new field, set it and default to ascending
+        this.sort.field = field;
+        this.sort.direction = "asc";
       }
     },
   },

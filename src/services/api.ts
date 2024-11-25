@@ -40,7 +40,10 @@ const mapTodoToTask = (todo: TodoResponse): Task => {
 };
 
 export const api = {
-  async getTasks(page: number = 1, limit: number = 10) {
+  async getTasks(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ tasks: Task[]; totalPages: number }> {
     const start = (page - 1) * limit;
     const response = await fetch(
       `${BASE_URL}/todos?_start=${start}&_limit=${limit}`,
@@ -54,16 +57,16 @@ export const api = {
     };
   },
 
-  async createTask(task: Partial<Omit<Task, "id">>) {
+  async createTask(taskData: Partial<Omit<Task, "id">>): Promise<Task> {
     const response = await fetch(`${BASE_URL}/todos`, {
       method: "POST",
       body: JSON.stringify({
-        title: task.title,
-        completed: task.status === "Completed",
+        title: taskData.title,
+        completed: taskData.status === "Completed",
         userId: 1,
-        description: task.description,
-        priority: task.priority,
-        dueDate: task.dueDate,
+        description: taskData.description,
+        priority: taskData.priority,
+        dueDate: taskData.dueDate,
       }),
       headers: {
         "Content-type": "application/json",
@@ -72,11 +75,11 @@ export const api = {
     const todo = await response.json();
     return {
       ...mapTodoToTask(todo),
-      ...task,
+      ...taskData,
     };
   },
 
-  async updateTask(task: Task) {
+  async updateTask(task: Task): Promise<Task> {
     const response = await fetch(`${BASE_URL}/todos/${task.id}`, {
       method: "PUT",
       body: JSON.stringify({
@@ -91,5 +94,11 @@ export const api = {
     });
     const todo: TodoResponse = await response.json();
     return mapTodoToTask(todo);
+  },
+
+  async deleteTask(id: number): Promise<void> {
+    await fetch(`${BASE_URL}/todos/${id}`, {
+      method: "DELETE",
+    });
   },
 };

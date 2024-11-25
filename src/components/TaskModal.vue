@@ -1,7 +1,8 @@
 <template>
-  <div class="modal-overlay">
-    <div class="modal">
-      <h2>{{ task ? "Edit Task" : "Create Task" }}</h2>
+  <div class="modal-overlay" @click="$emit('close')">
+    <div class="modal-content" @click.stop>
+      <h2>{{ isEdit ? "Edit Task" : "New Task" }}</h2>
+
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
           <label for="title">Title</label>
@@ -20,38 +21,33 @@
         <div class="form-group">
           <label for="status">Status</label>
           <select id="status" v-model="formData.status" required>
-            <option value="Pending">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
+            <option v-for="status in STATUSES" :key="status" :value="status">
+              {{ status }}
+            </option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="priority">Priority</label>
           <select id="priority" v-model="formData.priority" required>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
+            <option
+              v-for="priority in PRIORITIES"
+              :key="priority"
+              :value="priority"
+            >
+              {{ priority }}
+            </option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="dueDate">Due Date</label>
-          <input
-            id="dueDate"
-            v-model="formData.dueDate"
-            type="datetime-local"
-            required
-          />
+          <input id="dueDate" v-model="formData.dueDate" type="date" required />
         </div>
 
-        <div class="modal-actions">
-          <button type="button" @click="$emit('close')" class="cancel-btn">
-            Cancel
-          </button>
-          <button type="submit" class="save-btn">
-            {{ task ? "Update" : "Create" }}
-          </button>
+        <div class="form-actions">
+          <button type="button" @click="$emit('close')">Cancel</button>
+          <button type="submit">{{ isEdit ? "Save" : "Create" }}</button>
         </div>
       </form>
     </div>
@@ -59,40 +55,55 @@
 </template>
 
 <script setup lang="ts">
-import type { Task } from "@/types/task";
+import {
+  PRIORITIES,
+  STATUSES,
+  type Task,
+  type TaskPriority,
+  type TaskStatus,
+} from "@/types/task";
 import { onMounted, ref } from "vue";
 
+interface TaskFormData {
+  title: string;
+  description: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  dueDate: string;
+}
+
 const props = defineProps<{
-  task?: Task | null;
+  task?: Task | undefined;
 }>();
 
 const emit = defineEmits<{
   (e: "close"): void;
-  (e: "save", data: Partial<Task>): void;
+  (e: "save", task: TaskFormData): void;
 }>();
 
-const formData = ref({
+const isEdit = !!props.task;
+const formData = ref<TaskFormData>({
   title: "",
   description: "",
-  status: "Pending" as Task["status"],
-  priority: "Medium" as Task["priority"],
-  dueDate: "",
+  status: "Pending",
+  priority: "Low",
+  dueDate: new Date().toISOString().split("T")[0],
 });
 
 onMounted(() => {
   if (props.task) {
     formData.value = {
-      ...props.task,
-      dueDate: new Date(props.task.dueDate).toISOString().slice(0, 16),
+      title: props.task.title,
+      description: props.task.description,
+      status: props.task.status,
+      priority: props.task.priority,
+      dueDate: new Date(props.task.dueDate).toISOString().split("T")[0],
     };
   }
 });
 
 const handleSubmit = () => {
-  emit("save", {
-    ...formData.value,
-    dueDate: new Date(formData.value.dueDate).toISOString(),
-  });
+  emit("save", formData.value);
 };
 </script>
 
@@ -109,54 +120,58 @@ const handleSubmit = () => {
   justify-content: center;
 }
 
-.modal {
+.modal-content {
   background: white;
-  padding: 20px;
+  padding: 2rem;
   border-radius: 8px;
-  width: 90%;
+  width: 100%;
   max-width: 500px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 }
 
-.form-group label {
+label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+input,
+select,
+textarea {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
   border-radius: 4px;
 }
 
-.modal-actions {
+textarea {
+  height: 100px;
+}
+
+.form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.cancel-btn,
-.save-btn {
-  padding: 8px 16px;
+button {
+  padding: 0.5rem 1rem;
   border-radius: 4px;
-  border: none;
   cursor: pointer;
 }
 
-.cancel-btn {
-  background: #6c757d;
+button[type="submit"] {
+  background: #3b82f6;
   color: white;
+  border: none;
 }
 
-.save-btn {
-  background: #0d6efd;
-  color: white;
+button[type="button"] {
+  background: white;
+  border: 1px solid #e5e7eb;
 }
 </style>
