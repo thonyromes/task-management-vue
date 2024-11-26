@@ -9,7 +9,10 @@
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,ts,vue,css}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,vue,css}\"",
-    "lint": "eslint \"src/**/*.{js,ts,jsx,tsx,vue}\" --fix"
+    "lint": "eslint \"src/**/*.{js,ts,jsx,tsx,vue}\" --fix",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "pinia": "^2.2.6",
