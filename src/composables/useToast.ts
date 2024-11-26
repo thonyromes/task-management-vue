@@ -1,4 +1,4 @@
-import type { ToastType } from "@/components/Toast.vue";
+import type { ToastType } from "@/components/Toast/Toast.vue";
 import { ref } from "vue";
 
 const toastRef = ref();

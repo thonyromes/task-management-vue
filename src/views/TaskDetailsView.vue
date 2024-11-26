@@ -75,11 +75,11 @@
 </template>
 
 <script setup lang="ts">
-import ConfirmModal from "@/components/ConfirmModal.vue";
-import ErrorState from "@/components/ErrorState.vue";
-import LoadingState from "@/components/LoadingState.vue";
-import TaskContent from "@/components/TaskContent.vue";
-import TaskModal from "@/components/TaskModal.vue";
+import ErrorState from "@/components/Error/ErrorState.vue";
+import LoadingState from "@/components/Loading/LoadingState.vue";
+import ConfirmModal from "@/components/Modals/ConfirmModal.vue";
+import TaskModal from "@/components/Modals/TaskModal.vue";
+import TaskContent from "@/components/Tasks/TaskContent.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
 import { onMounted, ref, watch } from "vue";

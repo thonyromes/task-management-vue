@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import Toast from "@/components/Toast.vue";
+import Toast from "@/components/Toast/Toast.vue";
 import { useToast } from "@/composables/useToast";
 import { RouterView } from "vue-router";
 

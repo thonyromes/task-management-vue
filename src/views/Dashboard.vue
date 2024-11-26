@@ -68,47 +68,47 @@
 </template>
 
 <script setup lang="ts">
-import TaskList from "@/components/TaskList.vue";
-import TaskModal from "@/components/TaskModal.vue";
-import { useTaskStore } from "@/stores/taskStore";
-import type { Task } from "@/types/task";
-import { onMounted, ref } from "vue";
+  import TaskModal from "@/components/Modals/TaskModal.vue";
+  import TaskList from "@/components/Tasks/TaskList.vue";
+  import { useTaskStore } from "@/stores/taskStore";
+  import type { Task } from "@/types/task";
+  import { onMounted, ref } from "vue";
 
-const store = useTaskStore();
-const showCreateModal = ref(false);
-const showEditModal = ref(false);
-const editingTask = ref<Task | undefined>();
+  const store = useTaskStore();
+  const showCreateModal = ref(false);
+  const showEditModal = ref(false);
+  const editingTask = ref<Task | undefined>();
 
-const closeModal = () => {
-  showCreateModal.value = false;
-  showEditModal.value = false;
-  editingTask.value = undefined;
-};
+  const closeModal = () => {
+    showCreateModal.value = false;
+    showEditModal.value = false;
+    editingTask.value = undefined;
+  };
 
-const handleEdit = (task: Task) => {
-  editingTask.value = task;
-  showEditModal.value = true;
-};
+  const handleEdit = (task: Task) => {
+    editingTask.value = task;
+    showEditModal.value = true;
+  };
 
-const handleSave = async (taskData: Partial<Task>) => {
-  try {
-    if (editingTask.value) {
-      await store.updateTask({ ...editingTask.value, ...taskData });
-    } else {
-      await store.createTask(taskData);
+  const handleSave = async (taskData: Partial<Task>) => {
+    try {
+      if (editingTask.value) {
+        await store.updateTask({ ...editingTask.value, ...taskData });
+      } else {
+        await store.createTask(taskData);
+      }
+      closeModal();
+    } catch (error) {
+      console.error("Failed to save task:", error);
     }
-    closeModal();
-  } catch (error) {
-    console.error("Failed to save task:", error);
-  }
-};
+  };
 
-// Focus management
-onMounted(() => {
-  // Focus the main heading when the page loads
-  const mainHeading = document.getElementById("dashboard-title");
-  if (mainHeading) {
-    mainHeading.focus();
-  }
-});
+  // Focus management
+  onMounted(() => {
+    // Focus the main heading when the page loads
+    const mainHeading = document.getElementById("dashboard-title");
+    if (mainHeading) {
+      mainHeading.focus();
+    }
+  });
 </script>

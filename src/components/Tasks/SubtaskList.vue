@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import NoResults from "@/components/NoResults.vue";
+import NoResults from "@/components/NoResults/NoResults.vue";
 import type { Subtask } from "@/types/task";
 import { ref } from "vue";
 

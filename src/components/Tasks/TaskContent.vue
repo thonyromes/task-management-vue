@@ -124,8 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import Badge from "@/components/Badge.vue";
-import SubtaskList from "@/components/SubtaskList.vue";
+import Badge from "@/components/Badge/Badge.vue";
+import SubtaskList from "@/components/Tasks/SubtaskList.vue";
 import type { Task } from "@/types/task";
 
 defineProps<{

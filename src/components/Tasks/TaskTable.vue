@@ -135,8 +135,8 @@
 </template>
 
 <script setup lang="ts">
-import Badge from "@/components/Badge.vue";
-import SortIcon from "@/components/SortIcon.vue";
+import Badge from "@/components/Badge/Badge.vue";
+import SortIcon from "@/components/Icons/SortIcon.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
 
