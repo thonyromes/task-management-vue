@@ -17,7 +17,6 @@ A modern task management application built with Vue 3, TypeScript, and Vite.
 - Task listing and management
 - Loading states
 - Toast notifications
-- Error handling
 - Sorting functionality
 - Search and filter functionality
 - Error handling and recovery mechanisms
@@ -32,6 +31,7 @@ A modern task management application built with Vue 3, TypeScript, and Vite.
 ## 🛠️ Tech Stack
 
 - Vue 3
+- Pinia
 - TypeScript
 - Vite
 - Vue Test Utils (for testing)
