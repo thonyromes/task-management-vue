@@ -202,83 +202,11 @@
     </div>
 
     <!-- Pagination -->
-    <div class="flex justify-center mt-6">
-      <div class="join">
-        <!-- Previous Button -->
-        <button
-          class="join-item btn"
-          :class="{ 'btn-disabled': currentPage === 1 }"
-          :disabled="currentPage === 1"
-          @click="changePage(currentPage - 1)"
-        >
-          «
-        </button>
-
-        <!-- First Page -->
-        <button
-          v-if="currentPage > 2"
-          class="join-item btn"
-          :class="{ 'btn-active': currentPage === 1 }"
-          @click="changePage(1)"
-        >
-          1
-        </button>
-
-        <!-- Ellipsis if needed -->
-        <button v-if="currentPage > 3" class="join-item btn btn-disabled">
-          ...
-        </button>
-
-        <!-- Previous Page -->
-        <button
-          v-if="currentPage > 1"
-          class="join-item btn"
-          @click="changePage(currentPage - 1)"
-        >
-          {{ currentPage - 1 }}
-        </button>
-
-        <!-- Current Page -->
-        <button class="join-item btn btn-active">{{ currentPage }}</button>
-
-        <!-- Next Page -->
-        <button
-          v-if="currentPage < totalPages"
-          class="join-item btn"
-          @click="changePage(currentPage + 1)"
-        >
-          {{ currentPage + 1 }}
-        </button>
-
-        <!-- Ellipsis if needed -->
-        <button
-          v-if="currentPage < totalPages - 2"
-          class="join-item btn btn-disabled"
-        >
-          ...
-        </button>
-
-        <!-- Last Page -->
-        <button
-          v-if="currentPage < totalPages - 1"
-          class="join-item btn"
-          :class="{ 'btn-active': currentPage === totalPages }"
-          @click="changePage(totalPages)"
-        >
-          {{ totalPages }}
-        </button>
-
-        <!-- Next Button -->
-        <button
-          class="join-item btn"
-          :class="{ 'btn-disabled': currentPage === totalPages }"
-          :disabled="currentPage === totalPages"
-          @click="changePage(currentPage + 1)"
-        >
-          »
-        </button>
-      </div>
-    </div>
+    <TaskPagination
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      @page-change="changePage"
+    />
 
     <!-- Modals -->
     <TaskModal
@@ -303,6 +231,7 @@
 <script setup lang="ts">
 import SortIcon from "@/components/SortIcon.vue";
 import TaskFilters from "@/components/TaskFilters.vue";
+import TaskPagination from "@/components/TaskPagination.vue";
 import { useToast } from "@/composables/useToast";
 import { useTaskStore } from "@/stores/taskStore";
 import { Task } from "@/types/task";
