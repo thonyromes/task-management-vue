@@ -114,79 +114,12 @@
 
         <!-- Subtasks Section -->
         <div class="divider"></div>
-        <div class="subtasks-section">
-          <h2 class="text-2xl font-bold mb-4">Subtasks</h2>
-
-          <!-- Add Subtask Form -->
-          <form @submit.prevent="handleAddSubtask" class="flex gap-2 mb-4">
-            <input
-              v-model="newSubtaskTitle"
-              type="text"
-              placeholder="New subtask..."
-              class="input input-bordered flex-1"
-              required
-            />
-            <button type="submit" class="btn btn-primary">Add Subtask</button>
-          </form>
-
-          <!-- Subtasks List -->
-          <div v-if="task.subtasks.length" class="space-y-2">
-            <div
-              v-for="subtask in task.subtasks"
-              :key="subtask.id"
-              class="flex items-center justify-between bg-base-200 rounded-lg p-3"
-            >
-              <label class="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  class="checkbox"
-                  :checked="subtask.completed"
-                  @change="toggleSubtask(subtask.id, !subtask.completed)"
-                />
-                <span :class="{ 'line-through opacity-50': subtask.completed }">
-                  {{ subtask.title }}
-                </span>
-              </label>
-              <button
-                @click="deleteSubtask(subtask.id)"
-                class="btn btn-ghost btn-sm btn-circle"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- No Subtasks Message -->
-          <div v-else class="alert alert-info">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              class="stroke-current shrink-0 w-6 h-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>No subtasks yet. Add one above.</span>
-          </div>
-        </div>
+        <SubtaskList
+          :subtasks="task.subtasks"
+          @add="handleAddSubtask"
+          @toggle="toggleSubtask"
+          @delete="deleteSubtask"
+        />
       </div>
 
       <!-- Modals -->
@@ -215,6 +148,7 @@ import Badge from "@/components/Badge.vue";
 import ConfirmModal from "@/components/ConfirmModal.vue";
 import ErrorState from "@/components/ErrorState.vue";
 import LoadingState from "@/components/LoadingState.vue";
+import SubtaskList from "@/components/SubtaskList.vue";
 import TaskModal from "@/components/TaskModal.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
@@ -228,7 +162,6 @@ const store = useTaskStore();
 const task = ref<Task | undefined>();
 const loading = ref(false);
 const error = ref<string | undefined>();
-const newSubtaskTitle = ref("");
 const showEditModal = ref(false);
 const showDeleteModal = ref(false);
 const isEditing = ref(false);
@@ -298,16 +231,12 @@ const confirmDelete = async () => {
   }
 };
 
-const handleAddSubtask = async () => {
-  if (!task.value?.id || !newSubtaskTitle.value.trim()) return;
+const handleAddSubtask = async (title: string) => {
+  if (!task.value?.id) return;
 
   try {
-    const subtask = await store.createSubtask(
-      task.value.id,
-      newSubtaskTitle.value.trim(),
-    );
+    const subtask = await store.createSubtask(task.value.id, title);
     task.value.subtasks.push(subtask);
-    newSubtaskTitle.value = "";
   } catch (err) {
     error.value = "Failed to create subtask";
   }
