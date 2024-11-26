@@ -10,20 +10,6 @@ module.exports = {
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: [
-      {
-        light: {
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          ...require("daisyui/src/theming/themes")["light"],
-          primary: "#1B2B65", // Navy blue from the logo/buttons
-          secondary: "#FFB800", // Yellow/gold accent color
-          accent: "#FFB800", // Same as secondary for consistency
-          neutral: "#3D4451",
-          "base-100": "#FFFFFF",
-          "base-content": "#1B2B65",
-        },
-      },
-      "dark",
-    ],
+    themes: ["light", "dark"],
   },
 };
