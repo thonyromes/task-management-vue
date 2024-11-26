@@ -1,28 +1,17 @@
+import type { ToastType } from "@/components/Toast.vue";
 import { ref } from "vue";
 
-interface Toast {
-  message: string;
-  type: "success" | "error";
-}
-
-const toast = ref<Toast | null>(null);
-const timeoutId = ref<number>();
+const toastRef = ref();
 
 export function useToast() {
-  const showToast = (message: string, type: "success" | "error") => {
-    if (timeoutId.value) {
-      clearTimeout(timeoutId.value);
+  const showToast = (message: string, type: ToastType = "info") => {
+    if (toastRef.value) {
+      toastRef.value.addToast(message, type);
     }
-
-    toast.value = { message, type };
-
-    timeoutId.value = window.setTimeout(() => {
-      toast.value = null;
-    }, 3000);
   };
 
   return {
-    toast,
+    toastRef,
     showToast,
   };
 }

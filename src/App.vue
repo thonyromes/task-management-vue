@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import Toast from "@/components/Toast.vue";
+import { useToast } from "@/composables/useToast";
+import { RouterView } from "vue-router";
+
+const { toastRef } = useToast();
 </script>
 
 <template>
-  <div data-theme="light" class="font-sans">
-    <RouterView />
-    <Toast />
-  </div>
+  <Toast ref="toastRef" position="bottom" />
+  <RouterView />
 </template>
