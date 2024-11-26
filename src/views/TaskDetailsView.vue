@@ -193,6 +193,7 @@
       <TaskModal
         v-if="showEditModal"
         :task="task"
+        :loading="isEditing"
         @close="closeEditModal"
         @save="handleSaveTask"
       />
@@ -201,6 +202,7 @@
         v-if="showDeleteModal"
         title="Delete Task"
         message="Are you sure you want to delete this task?"
+        :loading="isDeleting"
         @close="closeDeleteModal"
         @confirm="confirmDelete"
       />
@@ -229,6 +231,8 @@ const error = ref<string | undefined>();
 const newSubtaskTitle = ref("");
 const showEditModal = ref(false);
 const showDeleteModal = ref(false);
+const isEditing = ref(false);
+const isDeleting = ref(false);
 
 const loadTaskDetails = async () => {
   const id = Number(route.params.id);
@@ -261,11 +265,14 @@ const handleSaveTask = async (taskData: Partial<Task>) => {
   if (!task.value) return;
 
   try {
+    isEditing.value = true;
     await store.updateTask({ ...task.value, ...taskData });
     task.value = await store.getTaskDetails(task.value.id);
     closeEditModal();
   } catch (err) {
     error.value = "Failed to update task";
+  } finally {
+    isEditing.value = false;
   }
 };
 
@@ -281,10 +288,13 @@ const confirmDelete = async () => {
   if (!task.value) return;
 
   try {
+    isDeleting.value = true;
     await store.deleteTask(task.value.id);
     router.push("/");
   } catch (err) {
     error.value = "Failed to delete task";
+  } finally {
+    isDeleting.value = false;
   }
 };
 
