@@ -36,6 +36,5 @@ interface Props {
   messageClass?: string;
 }
 
-// Default values are provided in the template using the ternary operators
 defineProps<Props>();
 </script>
