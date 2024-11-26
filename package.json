@@ -15,18 +15,20 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
-    "@vue/compiler-sfc": "^3.5.13",
     "pinia": "^2.2.6",
     "vue": "^3.5.13",
     "vue-router": "4"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/vue": "^8.1.0",
     "@types/node": "^22.10.0",
     "@typescript-eslint/eslint-plugin": "^8.16.0",
     "@typescript-eslint/parser": "^8.16.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
     "@vue/runtime-core": "^3.5.13",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.6.0",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.14",
@@ -35,12 +37,14 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-vue": "^9.31.0",
+    "jsdom": "^25.0.1",
     "postcss": "^8.4.49",
     "prettier": "^3.4.1",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.15",
     "typescript": "^5.7.2",
     "vite": "^6.0.0",
+    "vitest": "^2.1.6",
     "vue-tsc": "^2.1.10"
   }
 }
