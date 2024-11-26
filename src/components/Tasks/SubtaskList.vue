@@ -9,14 +9,14 @@
     <!-- Add Subtask Form -->
     <form
       @submit.prevent="handleAddSubtask"
-      class="flex gap-2 mb-4"
+      class="flex gap-2 mb-4 flex-col sm:flex-row"
       aria-label="Add new subtask"
     >
       <input
         v-model="newSubtaskTitle"
         type="text"
         placeholder="New subtask..."
-        class="input input-bordered flex-1"
+        class="input input-bordered flex-1 min-h-12"
         required
         aria-label="Subtask title"
       />
@@ -83,26 +83,26 @@
 </template>
 
 <script setup lang="ts">
-import NoResults from "@/components/NoResults/NoResults.vue";
-import type { Subtask } from "@/types/task";
-import { ref } from "vue";
+  import NoResults from "@/components/NoResults/NoResults.vue";
+  import type { Subtask } from "@/types/task";
+  import { ref } from "vue";
 
-defineProps<{
-  subtasks: Subtask[];
-}>();
+  defineProps<{
+    subtasks: Subtask[];
+  }>();
 
-const emit = defineEmits<{
-  (e: "add", title: string): void;
-  (e: "toggle", id: number, completed: boolean): void;
-  (e: "delete", id: number): void;
-}>();
+  const emit = defineEmits<{
+    (e: "add", title: string): void;
+    (e: "toggle", id: number, completed: boolean): void;
+    (e: "delete", id: number): void;
+  }>();
 
-const newSubtaskTitle = ref("");
+  const newSubtaskTitle = ref("");
 
-const handleAddSubtask = () => {
-  if (!newSubtaskTitle.value.trim()) return;
+  const handleAddSubtask = () => {
+    if (!newSubtaskTitle.value.trim()) return;
 
-  emit("add", newSubtaskTitle.value.trim());
-  newSubtaskTitle.value = "";
-};
+    emit("add", newSubtaskTitle.value.trim());
+    newSubtaskTitle.value = "";
+  };
 </script>
