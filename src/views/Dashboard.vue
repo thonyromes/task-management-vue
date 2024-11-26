@@ -1,14 +1,44 @@
 <template>
-  <div class="dashboard">
-    <header>
-      <h1>Task Dashboard</h1>
-      <button @click="showCreateModal = true" class="create-btn">
-        Create New Task
-      </button>
+  <div class="min-h-screen bg-base-200 p-4 sm:p-6">
+    <!-- Header Section -->
+    <header class="mb-8">
+      <div class="container mx-auto px-2">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-base-content">Task Dashboard</h1>
+            <p class="text-base-content/70 mt-1">
+              Manage your tasks efficiently
+            </p>
+          </div>
+          <button @click="showCreateModal = true" class="btn btn-primary gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Create New Task
+          </button>
+        </div>
+      </div>
     </header>
 
-    <TaskList @edit="handleEdit" />
+    <!-- Main Content -->
+    <main class="container mx-auto px-2">
+      <div class="bg-base-100 rounded-box shadow-lg overflow-x-auto">
+        <div class="min-w-full">
+          <TaskList @edit="handleEdit" />
+        </div>
+      </div>
+    </main>
 
+    <!-- Modal -->
     <TaskModal
       v-if="showCreateModal || showEditModal"
       :task="editingTask"
@@ -56,27 +86,5 @@ const handleSave = async (taskData: Partial<Task>) => {
 </script>
 
 <style scoped>
-.dashboard {
-  padding: 20px;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.create-btn {
-  padding: 10px 20px;
-  background: #0d6efd;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.create-btn:hover {
-  background: #0b5ed7;
-}
+/* Remove existing styles as we're using Tailwind/DaisyUI classes */
 </style>
