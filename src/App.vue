@@ -3,8 +3,10 @@ import Toast from "@/components/Toast.vue";
 </script>
 
 <template>
-  <RouterView />
-  <Toast />
+  <div data-theme="light">
+    <RouterView />
+    <Toast />
+  </div>
 </template>
 
 <style scoped>
