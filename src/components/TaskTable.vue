@@ -38,28 +38,10 @@
             {{ task.description }}
           </td>
           <td @click="$emit('rowClick', task.id)" class="cursor-pointer">
-            <div
-              class="badge badge-lg"
-              :class="{
-                'badge-warning': task.status === 'Pending',
-                'badge-info': task.status === 'In Progress',
-                'badge-success': task.status === 'Completed',
-              }"
-            >
-              {{ task.status }}
-            </div>
+            <Badge type="status" :value="task.status" />
           </td>
           <td @click="$emit('rowClick', task.id)" class="cursor-pointer">
-            <div
-              class="badge badge-lg"
-              :class="{
-                'badge-ghost': task.priority === 'Low',
-                'badge-warning': task.priority === 'Medium',
-                'badge-error': task.priority === 'High',
-              }"
-            >
-              {{ task.priority }}
-            </div>
+            <Badge type="priority" :value="task.priority" />
           </td>
           <td @click="$emit('rowClick', task.id)" class="cursor-pointer">
             {{ formatDate(task.dueDate) }}
@@ -113,6 +95,7 @@
 </template>
 
 <script setup lang="ts">
+import Badge from "@/components/Badge.vue";
 import SortIcon from "@/components/SortIcon.vue";
 import type { Task } from "@/types/task";
 

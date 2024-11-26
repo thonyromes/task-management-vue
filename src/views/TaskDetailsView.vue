@@ -93,14 +93,14 @@
               <label class="label">
                 <span class="label-text font-semibold">Status</span>
               </label>
-              <StatusBadge :status="task.status" class="badge-lg" />
+              <Badge type="status" :value="task.status" />
             </div>
 
             <div class="form-control">
               <label class="label">
                 <span class="label-text font-semibold">Priority</span>
               </label>
-              <PriorityBadge :priority="task.priority" class="badge-lg" />
+              <Badge type="priority" :value="task.priority" />
             </div>
 
             <div class="form-control">
@@ -209,11 +209,10 @@
 </template>
 
 <script setup lang="ts">
+import Badge from "@/components/Badge.vue";
 import ConfirmModal from "@/components/ConfirmModal.vue";
 import ErrorState from "@/components/ErrorState.vue";
 import LoadingState from "@/components/LoadingState.vue";
-import PriorityBadge from "@/components/PriorityBadge.vue";
-import StatusBadge from "@/components/StatusBadge.vue";
 import TaskModal from "@/components/TaskModal.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
@@ -335,38 +334,3 @@ const formatDate = (date: string) => {
 
 onMounted(loadTaskDetails);
 </script>
-
-<style scoped>
-.task-details-view {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.header {
-  margin-bottom: 2rem;
-}
-
-.back-button {
-  padding: 0.5rem 1rem;
-  background: none;
-  border: none;
-  color: #3b82f6;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.actions {
-  display: flex;
-  gap: 1rem;
-}
-
-/* ... rest of the styles ... */
-</style>
