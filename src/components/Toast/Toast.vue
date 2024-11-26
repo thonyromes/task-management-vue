@@ -8,6 +8,7 @@
     }"
     role="status"
     aria-live="polite"
+    data-testid="toast-container"
   >
     <div
       v-for="toast in toasts"
@@ -23,6 +24,7 @@
       }"
       role="alert"
       :aria-label="`${toast.type} notification: ${toast.message}`"
+      data-testid="toast-alert"
     >
       <!-- Success Icon -->
       <svg
@@ -92,12 +94,13 @@
         />
       </svg>
 
-      <div class="flex-1">{{ toast.message }}</div>
+      <div class="flex-1" data-testid="toast-message">{{ toast.message }}</div>
 
       <button
         @click="() => removeToast(toast.id)"
         class="btn btn-ghost btn-sm btn-circle"
         :aria-label="`Dismiss ${toast.type} notification`"
+        data-testid="toast-dismiss"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

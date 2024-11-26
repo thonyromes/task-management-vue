@@ -30,22 +30,22 @@
 </template>
 
 <script setup lang="ts">
-interface Props {
-  message?: string;
-  spinnerSize?: "xs" | "sm" | "md" | "lg";
-  spinnerType?: "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
-  spinnerColor?:
-    | "primary"
-    | "secondary"
-    | "accent"
-    | "neutral"
-    | "info"
-    | "success"
-    | "warning"
-    | "error";
-  containerClass?: string;
-  messageClass?: string;
-}
+  interface Props {
+    message?: string;
+    spinnerSize?: "xs" | "sm" | "md" | "lg";
+    spinnerType?: "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
+    spinnerColor?:
+      | "primary"
+      | "secondary"
+      | "accent"
+      | "neutral"
+      | "info"
+      | "success"
+      | "warning"
+      | "error";
+    containerClass?: string;
+    messageClass?: string;
+  }
 
-defineProps<Props>();
+  defineProps<Props>();
 </script>
