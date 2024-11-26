@@ -1,56 +1,88 @@
 <template>
-  <div class="overflow-x-auto bg-base-100 rounded-box">
-    <table class="table table-zebra w-full">
+  <div
+    class="overflow-x-auto bg-base-100 rounded-box"
+    role="region"
+    aria-label="Tasks table container"
+  >
+    <table class="table table-zebra w-full" role="grid" aria-rowcount="100">
       <!-- Table Header -->
       <thead>
-        <tr class="bg-base-200">
+        <tr class="bg-base-200" role="row">
           <th
             v-for="column in columns"
             :key="column.field"
             @click="column.sortable ? $emit('sort', column.field) : null"
             class="cursor-pointer hover:bg-base-300 transition-colors"
+            :aria-sort="getSortDirection(column.field)"
+            role="columnheader"
+            :aria-label="`${column.label}, ${column.sortable ? 'sortable column, click to sort' : 'column'}`"
+            scope="col"
           >
             <div class="flex items-center gap-2">
               {{ column.label }}
               <SortIcon v-if="column.sortable" :field="column.field" />
             </div>
           </th>
-          <th>Actions</th>
+          <th role="columnheader" scope="col" aria-label="Actions column">
+            Actions
+          </th>
         </tr>
       </thead>
       <!-- Table Body -->
       <tbody>
         <tr
-          v-for="task in tasks"
+          v-for="(task, index) in tasks"
           :key="task.id"
           class="hover:bg-base-200 transition-colors"
+          role="row"
+          :aria-rowindex="index + 1"
         >
           <td
             @click="$emit('rowClick', task.id)"
             class="cursor-pointer font-medium"
+            role="gridcell"
+            :aria-label="`Title: ${task.title}`"
           >
             {{ task.title }}
           </td>
           <td
             @click="$emit('rowClick', task.id)"
             class="cursor-pointer max-w-xs truncate"
+            role="gridcell"
+            :aria-label="`Description: ${task.description}`"
           >
             {{ task.description }}
           </td>
-          <td @click="$emit('rowClick', task.id)" class="cursor-pointer">
+          <td
+            @click="$emit('rowClick', task.id)"
+            class="cursor-pointer"
+            role="gridcell"
+            :aria-label="`Status: ${task.status}`"
+          >
             <Badge type="status" :value="task.status" />
           </td>
-          <td @click="$emit('rowClick', task.id)" class="cursor-pointer">
+          <td
+            @click="$emit('rowClick', task.id)"
+            class="cursor-pointer"
+            role="gridcell"
+            :aria-label="`Priority: ${task.priority}`"
+          >
             <Badge type="priority" :value="task.priority" />
           </td>
-          <td @click="$emit('rowClick', task.id)" class="cursor-pointer">
+          <td
+            @click="$emit('rowClick', task.id)"
+            class="cursor-pointer"
+            role="gridcell"
+            :aria-label="`Due Date: ${formatDate(task.dueDate)}`"
+          >
             {{ formatDate(task.dueDate) }}
           </td>
-          <td>
-            <div class="flex gap-2">
+          <td role="gridcell">
+            <div class="flex gap-2" role="group" aria-label="Task actions">
               <button
                 @click="$emit('edit', task)"
                 class="btn btn-sm btn-info btn-outline"
+                :aria-label="`Edit task: ${task.title}`"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -58,6 +90,7 @@
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
                 >
                   <path
                     stroke-linecap="round"
@@ -70,6 +103,7 @@
               <button
                 @click="$emit('delete', task.id)"
                 class="btn btn-sm btn-error btn-outline"
+                :aria-label="`Delete task: ${task.title}`"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -77,6 +111,7 @@
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
                 >
                   <path
                     stroke-linecap="round"
@@ -97,9 +132,9 @@
 <script setup lang="ts">
 import Badge from "@/components/Badge.vue";
 import SortIcon from "@/components/SortIcon.vue";
+import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
 
-// Define sortable fields explicitly
 type SortableField =
   | "id"
   | "title"
@@ -113,6 +148,8 @@ interface Column {
   label: string;
   sortable: boolean;
 }
+
+const store = useTaskStore();
 
 const columns: Column[] = [
   { field: "title", label: "Title", sortable: true },
@@ -132,6 +169,11 @@ defineEmits<{
   (e: "delete", id: number): void;
   (e: "rowClick", id: number): void;
 }>();
+
+const getSortDirection = (field: SortableField) => {
+  if (store.sort.field !== field) return undefined;
+  return store.sort.direction === "asc" ? "ascending" : "descending";
+};
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();
