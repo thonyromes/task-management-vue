@@ -1,7 +1,7 @@
 <template>
   <div class="modal modal-open">
     <div
-      class="modal-box relative max-w-2xl transform transition-all duration-300"
+      class="modal-box relative max-w-2xl transform transition-all duration-300 bg-base-100"
       :class="{
         'scale-100 opacity-100': true,
         'scale-95 opacity-0': loading,
