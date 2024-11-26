@@ -1,21 +1,36 @@
 <template>
-  <div class="min-h-screen bg-base-200 p-4 sm:p-6">
+  <div
+    class="min-h-screen bg-base-200 p-4 sm:p-6"
+    role="main"
+    aria-labelledby="dashboard-title"
+  >
     <!-- Header Section -->
     <header class="mb-8">
       <div class="container mx-auto px-2">
         <div class="flex justify-between items-center">
           <div>
-            <h1 class="text-3xl font-bold text-base-content">Task Dashboard</h1>
-            <p class="text-base-content/70 mt-1">
+            <h1
+              id="dashboard-title"
+              class="text-3xl font-bold text-base-content"
+              tabindex="-1"
+            >
+              Task Dashboard
+            </h1>
+            <p class="text-base-content/70 mt-1" role="doc-subtitle">
               Manage your tasks efficiently
             </p>
           </div>
-          <button @click="showCreateModal = true" class="btn btn-primary gap-2">
+          <button
+            @click="showCreateModal = true"
+            class="btn btn-primary gap-2"
+            aria-label="Create new task"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
               viewBox="0 0 20 20"
               fill="currentColor"
+              aria-hidden="true"
             >
               <path
                 fill-rule="evenodd"
@@ -30,7 +45,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-2">
+    <main class="container mx-auto px-2" role="region" aria-label="Tasks list">
       <div class="bg-base-100 rounded-box shadow-lg overflow-x-auto">
         <div class="min-w-full">
           <TaskList @edit="handleEdit" />
@@ -53,7 +68,7 @@ import TaskList from "@/components/TaskList.vue";
 import TaskModal from "@/components/TaskModal.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const store = useTaskStore();
 const showCreateModal = ref(false);
@@ -83,4 +98,13 @@ const handleSave = async (taskData: Partial<Task>) => {
     console.error("Failed to save task:", error);
   }
 };
+
+// Focus management
+onMounted(() => {
+  // Focus the main heading when the page loads
+  const mainHeading = document.getElementById("dashboard-title");
+  if (mainHeading) {
+    mainHeading.focus();
+  }
+});
 </script>

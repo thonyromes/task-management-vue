@@ -1,15 +1,24 @@
 <template>
-  <div class="min-h-screen bg-base-200 p-4 sm:p-6">
+  <div
+    class="min-h-screen bg-base-200 p-4 sm:p-6"
+    role="main"
+    aria-labelledby="task-title"
+  >
     <div class="container mx-auto max-w-4xl">
       <!-- Header -->
       <div class="mb-8">
-        <button @click="router.push('/')" class="btn btn-ghost gap-2">
+        <button
+          @click="router.push('/')"
+          class="btn btn-ghost gap-2"
+          aria-label="Return to dashboard"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               stroke-linecap="round"
@@ -73,7 +82,7 @@ import TaskContent from "@/components/TaskContent.vue";
 import TaskModal from "@/components/TaskModal.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter();
@@ -188,5 +197,20 @@ const deleteSubtask = async (subtaskId: number) => {
   }
 };
 
-onMounted(loadTaskDetails);
+// Focus management
+onMounted(() => {
+  loadTaskDetails();
+});
+
+// Update document title when task loads
+watch(
+  () => task.value?.title,
+  (newTitle) => {
+    if (newTitle) {
+      document.title = `${newTitle} - Task Details`;
+    } else {
+      document.title = "Task Details";
+    }
+  },
+);
 </script>
