@@ -170,21 +170,3 @@ defineExpose({
   addToast,
 });
 </script>
-
-<style scoped>
-.toast {
-  @apply fixed z-50 p-4 space-y-4;
-}
-
-.toast-top {
-  @apply top-0;
-}
-
-.toast-middle {
-  @apply top-1/2 -translate-y-1/2;
-}
-
-.toast-bottom {
-  @apply bottom-0;
-}
-</style>
