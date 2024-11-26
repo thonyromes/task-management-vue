@@ -1,60 +1,49 @@
 <template>
   <div
-    class="alert alert-error shadow-lg w-fit mx-auto"
-    role="alert"
-    aria-live="assertive"
+    class="flex flex-col items-center justify-center p-4 text-center min-h-[200px]"
+    data-testid="error-state"
   >
-    <div class="flex items-center gap-4">
+    <div class="text-error mb-4 w-16 h-16" data-testid="error-icon">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="stroke-current shrink-0 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
-        aria-hidden="true"
+        stroke="currentColor"
       >
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
         />
       </svg>
-      <div class="flex-1">
-        <h2 class="text-lg font-semibold sr-only">Error</h2>
-        <p>{{ message }}</p>
-      </div>
-      <button
-        @click="$emit('retry')"
-        class="btn btn-ghost gap-2"
-        aria-label="Retry operation"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-          />
-        </svg>
-        <span>Retry</span>
-      </button>
     </div>
+    <h2 class="text-xl font-semibold mb-2" data-testid="error-title">
+      {{ title }}
+    </h2>
+    <p class="text-base-content/60" data-testid="error-message">
+      {{ message }}
+    </p>
+    <button
+      v-if="retryAction"
+      @click="retryAction"
+      class="btn btn-error mt-4"
+      data-testid="retry-button"
+    >
+      Try Again
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-  defineProps<{
-    message: string;
-  }>();
+  interface Props {
+    title?: string;
+    message?: string;
+    retryAction?: () => void;
+  }
 
-  defineEmits<{
-    (e: "retry"): void;
-  }>();
+  withDefaults(defineProps<Props>(), {
+    title: "Something went wrong",
+    message: "An error occurred while processing your request.",
+  });
 </script>
