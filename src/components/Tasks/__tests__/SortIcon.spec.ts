@@ -1,6 +1,6 @@
 import { useTaskStore } from "@/stores/taskStore";
+import { renderWithSetup } from "@/test/utils";
 import type { SortableTaskField } from "@/types/task";
-import { render } from "@testing-library/vue";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import SortIcon from "../SortIcon.vue";
@@ -27,7 +27,7 @@ describe("SortIcon", () => {
   });
 
   it("renders correctly with active ascending sort", () => {
-    const { getByTestId } = render(SortIcon, {
+    const { getByTestId } = renderWithSetup(SortIcon, {
       props: {
         field: "title",
       },
@@ -43,7 +43,7 @@ describe("SortIcon", () => {
   });
 
   it("has correct accessibility attributes", () => {
-    const { getByTestId } = render(SortIcon, {
+    const { getByTestId } = renderWithSetup(SortIcon, {
       props: {
         field: "title",
       },
@@ -66,7 +66,7 @@ describe("SortIcon", () => {
       createMockStore("dueDate", "asc")
     );
 
-    const { getByTestId } = render(SortIcon, {
+    const { getByTestId } = renderWithSetup(SortIcon, {
       props: {
         field: "title",
       },
@@ -83,7 +83,7 @@ describe("SortIcon", () => {
       createMockStore("title", "desc")
     );
 
-    const { getByTestId } = render(SortIcon, {
+    const { getByTestId } = renderWithSetup(SortIcon, {
       props: {
         field: "title",
       },
@@ -98,7 +98,7 @@ describe("SortIcon", () => {
 
   describe("SVG Properties", () => {
     it("maintains consistent SVG attributes", () => {
-      const { getByTestId } = render(SortIcon, {
+      const { getByTestId } = renderWithSetup(SortIcon, {
         props: {
           field: "title",
         },
@@ -117,7 +117,7 @@ describe("SortIcon", () => {
 
   describe("State Changes", () => {
     it("updates aria-label based on sort direction", async () => {
-      const { getByTestId, rerender } = render(SortIcon, {
+      const { getByTestId, rerender } = renderWithSetup(SortIcon, {
         props: {
           field: "title",
         },
@@ -141,7 +141,7 @@ describe("SortIcon", () => {
     });
 
     it("handles inactive state correctly", async () => {
-      const { getByTestId, rerender } = render(SortIcon, {
+      const { getByTestId, rerender } = renderWithSetup(SortIcon, {
         props: {
           field: "title",
         },

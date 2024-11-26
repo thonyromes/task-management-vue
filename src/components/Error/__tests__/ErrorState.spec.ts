@@ -1,10 +1,10 @@
-import { render } from "@testing-library/vue";
+import { renderWithSetup } from "@/test/utils";
 import { describe, expect, it } from "vitest";
 import ErrorState from "../ErrorState.vue";
 
 describe("ErrorState", () => {
   it("renders with default props", () => {
-    const { getByTestId } = render(ErrorState);
+    const { getByTestId } = renderWithSetup(ErrorState);
 
     const errorState = getByTestId("error-state");
     const errorTitle = getByTestId("error-title");
@@ -21,7 +21,7 @@ describe("ErrorState", () => {
     const customTitle = "Custom Error";
     const customMessage = "This is a custom error message";
 
-    const { getByTestId } = render(ErrorState, {
+    const { getByTestId } = renderWithSetup(ErrorState, {
       props: {
         title: customTitle,
         message: customMessage,
@@ -36,7 +36,7 @@ describe("ErrorState", () => {
   });
 
   it("does not render retry button when retryAction is not provided", () => {
-    const { queryByTestId } = render(ErrorState, {
+    const { queryByTestId } = renderWithSetup(ErrorState, {
       props: {
         showRetry: false,
       },
@@ -47,7 +47,7 @@ describe("ErrorState", () => {
   });
 
   it("maintains visual hierarchy with all elements", () => {
-    const { getByTestId } = render(ErrorState, {
+    const { getByTestId } = renderWithSetup(ErrorState, {
       props: {
         showRetry: true,
       },
@@ -77,7 +77,7 @@ describe("ErrorState", () => {
 
   describe("Accessibility", () => {
     it("has proper heading structure", () => {
-      const { getByRole } = render(ErrorState);
+      const { getByRole } = renderWithSetup(ErrorState);
 
       const heading = getByRole("heading", { level: 2 });
       expect(heading).toBeTruthy();
@@ -85,7 +85,7 @@ describe("ErrorState", () => {
     });
 
     it("has accessible button when retry is provided", () => {
-      const { getByRole } = render(ErrorState, {
+      const { getByRole } = renderWithSetup(ErrorState, {
         props: {
           showRetry: true,
         },

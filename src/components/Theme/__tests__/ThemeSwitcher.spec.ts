@@ -1,4 +1,5 @@
-import { fireEvent, render } from "@testing-library/vue";
+import { renderWithSetup } from "@/test/utils";
+import { fireEvent } from "@testing-library/vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import ThemeSwitcher from "../ThemeSwitcher.vue";
@@ -18,7 +19,7 @@ describe("ThemeSwitcher", () => {
   });
 
   it("renders with light theme by default when no preference is set", () => {
-    const { getByTestId } = render(ThemeSwitcher);
+    const { getByTestId } = renderWithSetup(ThemeSwitcher);
 
     const button = getByTestId("theme-switcher");
     const darkIcon = getByTestId("dark-icon");
@@ -30,7 +31,7 @@ describe("ThemeSwitcher", () => {
   });
 
   it("toggles theme when clicked", async () => {
-    const { getByTestId } = render(ThemeSwitcher);
+    const { getByTestId } = renderWithSetup(ThemeSwitcher);
     const button = getByTestId("theme-switcher");
 
     // Initial state should be light
@@ -57,7 +58,7 @@ describe("ThemeSwitcher", () => {
       removeEventListener: vi.fn(),
     }));
 
-    const { getByTestId } = render(ThemeSwitcher);
+    const { getByTestId } = renderWithSetup(ThemeSwitcher);
 
     // Wait for next tick to ensure component has mounted and processed preferences
     await nextTick();
@@ -70,7 +71,7 @@ describe("ThemeSwitcher", () => {
   });
 
   it("persists theme choice in localStorage", async () => {
-    const { getByTestId } = render(ThemeSwitcher);
+    const { getByTestId } = renderWithSetup(ThemeSwitcher);
     const button = getByTestId("theme-switcher");
 
     // Toggle to dark mode
@@ -96,7 +97,7 @@ describe("ThemeSwitcher", () => {
     // Set light theme in localStorage
     localStorage.setItem("theme", "light");
 
-    const { getByTestId } = render(ThemeSwitcher);
+    const { getByTestId } = renderWithSetup(ThemeSwitcher);
 
     // Wait for next tick to ensure component has mounted and processed preferences
     await nextTick();

@@ -1,11 +1,11 @@
-import { render } from "@testing-library/vue";
+import { renderWithSetup } from "@/test/utils";
 import { describe, expect, it } from "vitest";
 import Badge from "../Badge.vue";
 
 describe("Badge", () => {
   describe("Priority Badges", () => {
     it("renders low priority badge correctly", () => {
-      const { getByTestId } = render(Badge, {
+      const { getByTestId } = renderWithSetup(Badge, {
         props: {
           type: "priority",
           value: "Low",
@@ -26,7 +26,7 @@ describe("Badge", () => {
     });
 
     it("renders medium priority badge correctly", () => {
-      const { getByTestId } = render(Badge, {
+      const { getByTestId } = renderWithSetup(Badge, {
         props: {
           type: "priority",
           value: "Medium",
@@ -42,7 +42,7 @@ describe("Badge", () => {
     });
 
     it("renders high priority badge correctly", () => {
-      const { getByTestId } = render(Badge, {
+      const { getByTestId } = renderWithSetup(Badge, {
         props: {
           type: "priority",
           value: "High",
@@ -60,7 +60,7 @@ describe("Badge", () => {
 
   describe("Status Badges", () => {
     it("renders pending status badge correctly", () => {
-      const { getByTestId } = render(Badge, {
+      const { getByTestId } = renderWithSetup(Badge, {
         props: {
           type: "status",
           value: "Pending",
@@ -76,7 +76,7 @@ describe("Badge", () => {
     });
 
     it("renders in progress status badge correctly", () => {
-      const { getByTestId } = render(Badge, {
+      const { getByTestId } = renderWithSetup(Badge, {
         props: {
           type: "status",
           value: "In Progress",
@@ -92,7 +92,7 @@ describe("Badge", () => {
     });
 
     it("renders completed status badge correctly", () => {
-      const { getByTestId } = render(Badge, {
+      const { getByTestId } = renderWithSetup(Badge, {
         props: {
           type: "status",
           value: "Completed",
@@ -110,7 +110,7 @@ describe("Badge", () => {
 
   describe("Accessibility", () => {
     it("has correct aria labels for priority badges", () => {
-      const { getByRole } = render(Badge, {
+      const { getByRole } = renderWithSetup(Badge, {
         props: {
           type: "priority",
           value: "High",
@@ -122,7 +122,7 @@ describe("Badge", () => {
     });
 
     it("has correct aria labels for status badges", () => {
-      const { getByRole } = render(Badge, {
+      const { getByRole } = renderWithSetup(Badge, {
         props: {
           type: "status",
           value: "Completed",
