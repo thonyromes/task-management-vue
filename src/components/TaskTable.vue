@@ -36,9 +36,13 @@
           class="hover:bg-base-200 transition-colors"
           role="row"
           :aria-rowindex="index + 1"
+          tabindex="0"
+          @click="$emit('rowClick', task.id)"
+          @keydown.enter="$emit('rowClick', task.id)"
+          @keydown.space.prevent="$emit('rowClick', task.id)"
+          :aria-label="`Task: ${task.title}. Press Enter or Space to view details`"
         >
           <td
-            @click="$emit('rowClick', task.id)"
             class="cursor-pointer font-medium"
             role="gridcell"
             :aria-label="`Title: ${task.title}`"
@@ -46,7 +50,6 @@
             {{ task.title }}
           </td>
           <td
-            @click="$emit('rowClick', task.id)"
             class="cursor-pointer max-w-xs truncate"
             role="gridcell"
             :aria-label="`Description: ${task.description}`"
@@ -54,7 +57,6 @@
             {{ task.description }}
           </td>
           <td
-            @click="$emit('rowClick', task.id)"
             class="cursor-pointer"
             role="gridcell"
             :aria-label="`Status: ${task.status}`"
@@ -62,7 +64,6 @@
             <Badge type="status" :value="task.status" />
           </td>
           <td
-            @click="$emit('rowClick', task.id)"
             class="cursor-pointer"
             role="gridcell"
             :aria-label="`Priority: ${task.priority}`"
@@ -70,7 +71,6 @@
             <Badge type="priority" :value="task.priority" />
           </td>
           <td
-            @click="$emit('rowClick', task.id)"
             class="cursor-pointer"
             role="gridcell"
             :aria-label="`Due Date: ${formatDate(task.dueDate)}`"
@@ -78,7 +78,12 @@
             {{ formatDate(task.dueDate) }}
           </td>
           <td role="gridcell">
-            <div class="flex gap-2" role="group" aria-label="Task actions">
+            <div
+              class="flex gap-2"
+              role="group"
+              aria-label="Task actions"
+              @click.stop
+            >
               <button
                 @click="$emit('edit', task)"
                 class="btn btn-sm btn-info btn-outline"
