@@ -1,5 +1,10 @@
 <template>
-  <div class="modal modal-open">
+  <div
+    class="modal modal-open"
+    role="dialog"
+    aria-labelledby="modal-title"
+    aria-modal="true"
+  >
     <div
       class="modal-box relative max-w-2xl transform transition-all duration-300 bg-base-100"
       :class="{
@@ -12,6 +17,7 @@
         @click="$emit('close')"
         class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 transition-transform hover:rotate-90"
         :disabled="loading"
+        aria-label="Close modal"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -31,18 +37,21 @@
 
       <!-- Modal Content -->
       <div class="pt-2">
-        <h3 class="text-2xl font-bold mb-6">
+        <h3 id="modal-title" class="text-2xl font-bold mb-6">
           {{ task ? "Edit Task" : "Create New Task" }}
         </h3>
 
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <!-- Title Input -->
           <div class="form-control w-full">
-            <label class="label">
+            <label for="title" class="label">
               <span class="label-text font-medium">Title</span>
-              <span class="label-text-alt text-error">Required</span>
+              <span class="label-text-alt text-error" aria-hidden="true"
+                >Required</span
+              >
             </label>
             <input
+              id="title"
               v-model="formData.title"
               type="text"
               placeholder="Enter task title"
@@ -50,37 +59,46 @@
               :class="{ 'input-disabled': loading }"
               required
               :disabled="loading"
+              aria-required="true"
+              aria-invalid="false"
             />
           </div>
 
           <!-- Description Input -->
           <div class="form-control w-full">
-            <label class="label">
+            <label for="description" class="label">
               <span class="label-text font-medium">Description</span>
-              <span class="label-text-alt text-error">Required</span>
+              <span class="label-text-alt text-error" aria-hidden="true"
+                >Required</span
+              >
             </label>
             <textarea
+              id="description"
               v-model="formData.description"
               class="textarea textarea-bordered h-24"
               :class="{ 'textarea-disabled': loading }"
               placeholder="Enter task description"
               required
               :disabled="loading"
+              aria-required="true"
+              aria-invalid="false"
             ></textarea>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Status Select -->
             <div class="form-control w-full">
-              <label class="label">
+              <label for="status" class="label">
                 <span class="label-text font-medium">Status</span>
               </label>
               <select
+                id="status"
                 v-model="formData.status"
                 class="select select-bordered w-full"
                 :class="{ 'select-disabled': loading }"
                 required
                 :disabled="loading"
+                aria-required="true"
               >
                 <option
                   v-for="status in STATUSES"
@@ -94,15 +112,17 @@
 
             <!-- Priority Select -->
             <div class="form-control w-full">
-              <label class="label">
+              <label for="priority" class="label">
                 <span class="label-text font-medium">Priority</span>
               </label>
               <select
+                id="priority"
                 v-model="formData.priority"
                 class="select select-bordered w-full"
                 :class="{ 'select-disabled': loading }"
                 required
                 :disabled="loading"
+                aria-required="true"
               >
                 <option
                   v-for="priority in PRIORITIES"
@@ -117,17 +137,22 @@
 
           <!-- Due Date Input -->
           <div class="form-control w-full">
-            <label class="label">
+            <label for="dueDate" class="label">
               <span class="label-text font-medium">Due Date</span>
-              <span class="label-text-alt text-error">Required</span>
+              <span class="label-text-alt text-error" aria-hidden="true"
+                >Required</span
+              >
             </label>
             <input
+              id="dueDate"
               v-model="formData.dueDate"
               type="date"
               class="input input-bordered w-full"
               :class="{ 'input-disabled': loading }"
               required
               :disabled="loading"
+              aria-required="true"
+              aria-invalid="false"
             />
           </div>
 
@@ -139,6 +164,7 @@
               class="btn btn-ghost transition-all duration-300 hover:scale-105"
               :class="{ 'opacity-50': loading }"
               :disabled="loading"
+              aria-label="Cancel"
             >
               Cancel
             </button>
@@ -147,6 +173,7 @@
               class="btn btn-primary gap-2 transition-all duration-300 hover:scale-105"
               :class="{ loading: loading }"
               :disabled="loading"
+              :aria-label="task ? 'Save changes' : 'Create task'"
             >
               <svg
                 v-if="!loading"
@@ -155,6 +182,7 @@
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   stroke-linecap="round"
