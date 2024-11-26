@@ -10,28 +10,11 @@
     </div>
 
     <!-- Error State -->
-    <div v-else-if="store.error" class="alert alert-error shadow-lg">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="stroke-current shrink-0 h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span>{{ store.error }}</span>
-      <button
-        @click="store.fetchTasks(currentPage, itemsPerPage)"
-        class="btn btn-sm btn-ghost"
-      >
-        Retry
-      </button>
-    </div>
+    <ErrorState
+      v-else-if="store.error"
+      :message="store.error"
+      @retry="store.fetchTasks(currentPage, itemsPerPage)"
+    />
 
     <!-- Tasks Table -->
     <div v-else class="overflow-x-auto bg-base-100 rounded-box">
@@ -229,6 +212,7 @@
 </template>
 
 <script setup lang="ts">
+import ErrorState from "@/components/ErrorState.vue";
 import SortIcon from "@/components/SortIcon.vue";
 import TaskFilters from "@/components/TaskFilters.vue";
 import TaskPagination from "@/components/TaskPagination.vue";
