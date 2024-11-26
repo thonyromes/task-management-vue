@@ -70,9 +70,12 @@
 <script setup lang="ts">
   import TaskModal from "@/components/Modals/TaskModal.vue";
   import TaskList from "@/components/Tasks/TaskList.vue";
+  import { useToast } from "@/composables/useToast";
   import { useTaskStore } from "@/stores/taskStore";
   import type { Task } from "@/types/task";
   import { onMounted, ref } from "vue";
+
+  const { showToast } = useToast();
 
   const store = useTaskStore();
   const showCreateModal = ref(false);
@@ -99,7 +102,7 @@
       }
       closeModal();
     } catch (error) {
-      console.error("Failed to save task:", error);
+      showToast(error instanceof Error ? error.message : "Failed to save task");
     }
   };
 
