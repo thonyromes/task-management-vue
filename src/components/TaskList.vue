@@ -106,7 +106,7 @@
             {{ formatDate(task.dueDate) }}
           </td>
           <td class="actions">
-            <button @click="$emit('edit', task)" class="edit">Edit</button>
+            <button @click="openTaskModal(task)" class="edit">Edit</button>
             <button @click="openDeleteModal(task.id)" class="delete">
               Delete
             </button>
@@ -151,6 +151,7 @@
     <TaskModal
       v-if="showTaskModal"
       :task="selectedTask"
+      :loading="isSaving"
       @close="closeTaskModal"
       @save="handleSaveTask"
     />
@@ -220,6 +221,7 @@ const showDeleteModal = ref(false);
 const selectedTask = ref<Task | undefined>(undefined);
 const taskToDelete = ref<number | undefined>(undefined);
 const isDeleting = ref(false);
+const isSaving = ref(false);
 
 const openTaskModal = (task?: Task) => {
   selectedTask.value = task;
@@ -233,6 +235,7 @@ const closeTaskModal = () => {
 
 const handleSaveTask = async (taskData: Partial<Task>) => {
   try {
+    isSaving.value = true;
     if (selectedTask.value) {
       const updatedTask = await store.updateTask({
         ...selectedTask.value,
@@ -247,6 +250,8 @@ const handleSaveTask = async (taskData: Partial<Task>) => {
     closeTaskModal();
   } catch (error) {
     console.error("Failed to save task:", error);
+  } finally {
+    isSaving.value = false;
   }
 };
 
@@ -276,14 +281,6 @@ const confirmDelete = async () => {
       isDeleting.value = false;
     }
   }
-};
-
-const showDetailsModal = ref(false);
-const selectedTaskId = ref<number | undefined>(undefined);
-
-const closeTaskDetails = () => {
-  showDetailsModal.value = false;
-  selectedTaskId.value = undefined;
 };
 
 watch(

@@ -1,8 +1,7 @@
 <template>
   <div class="modal-overlay" @click="$emit('close')">
     <div class="modal-content" @click.stop>
-      <h2>{{ isEdit ? "Edit Task" : "New Task" }}</h2>
-
+      <h2>{{ task ? "Edit Task" : "Create Task" }}</h2>
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
           <label for="title">Title</label>
@@ -45,9 +44,21 @@
           <input id="dueDate" v-model="formData.dueDate" type="date" required />
         </div>
 
-        <div class="form-actions">
-          <button type="button" @click="$emit('close')">Cancel</button>
-          <button type="submit">{{ isEdit ? "Save" : "Create" }}</button>
+        <div class="modal-actions">
+          <button type="button" @click="$emit('close')" :disabled="loading">
+            Cancel
+          </button>
+          <button type="submit" class="primary" :disabled="loading">
+            {{
+              loading
+                ? isEdit
+                  ? "Saving..."
+                  : "Creating..."
+                : isEdit
+                  ? "Save"
+                  : "Create"
+            }}
+          </button>
         </div>
       </form>
     </div>
@@ -74,6 +85,7 @@ interface TaskFormData {
 
 const props = defineProps<{
   task?: Task | undefined;
+  loading?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -173,5 +185,10 @@ button[type="submit"] {
 button[type="button"] {
   background: white;
   border: 1px solid #e5e7eb;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 </style>
