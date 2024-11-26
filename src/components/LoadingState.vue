@@ -1,5 +1,11 @@
 <template>
-  <div class="flex items-center justify-center p-8" :class="containerClass">
+  <div
+    class="flex items-center justify-center p-8"
+    :class="containerClass"
+    role="status"
+    aria-live="polite"
+    aria-busy="true"
+  >
     <span
       class="loading"
       :class="[
@@ -7,6 +13,7 @@
         spinnerType ? `loading-${spinnerType}` : 'loading-spinner',
         spinnerColor ? `text-${spinnerColor}` : 'text-primary',
       ]"
+      aria-hidden="true"
     ></span>
     <span
       v-if="message"
@@ -14,6 +21,10 @@
       :class="messageClass"
     >
       {{ message }}
+    </span>
+    <!-- Hidden text for screen readers -->
+    <span class="sr-only">
+      {{ message || "Loading content" }}. Please wait.
     </span>
   </div>
 </template>

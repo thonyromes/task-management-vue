@@ -1,5 +1,5 @@
 <template>
-  <div class="task-list p-4">
+  <div class="task-list p-4" role="region" aria-label="Tasks management">
     <!-- Search and Filters -->
     <TaskFilters />
 
@@ -21,7 +21,12 @@
 
     <!-- Tasks Table -->
     <div v-else>
+      <div role="status" aria-live="polite" class="sr-only">
+        {{ store.filteredAndSortedTasks.length }} tasks found
+      </div>
+
       <TaskTable
+        v-if="store.filteredAndSortedTasks.length > 0"
         :tasks="store.filteredAndSortedTasks"
         @sort="store.setSort"
         @edit="openTaskModal"
@@ -30,10 +35,7 @@
       />
 
       <!-- No Results -->
-      <NoResults
-        v-if="store.filteredAndSortedTasks.length === 0"
-        message="No tasks found matching your criteria"
-      />
+      <NoResults v-else message="No tasks found matching your criteria" />
     </div>
 
     <!-- Pagination -->

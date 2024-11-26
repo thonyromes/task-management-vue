@@ -1,5 +1,9 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
+  <div
+    class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6"
+    role="search"
+    aria-label="Task filters"
+  >
     <!-- Search -->
     <div class="md:col-span-6">
       <div class="form-control">
@@ -10,6 +14,8 @@
             placeholder="Search tasks..."
             class="input input-bordered w-full pl-10"
             @input="handleSearch"
+            aria-label="Search tasks"
+            role="searchbox"
           />
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -20,6 +26,7 @@
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -34,32 +41,46 @@
     </div>
 
     <!-- Filters -->
-    <div class="md:col-span-6 flex gap-4">
-      <select
-        :value="selectedStatus"
-        @change="handleStatusChange"
-        class="select select-bordered flex-1"
-      >
-        <option value="All">All Status</option>
-        <option v-for="status in STATUSES" :key="status" :value="status">
-          {{ status }}
-        </option>
-      </select>
-
-      <select
-        :value="selectedPriority"
-        @change="handlePriorityChange"
-        class="select select-bordered flex-1"
-      >
-        <option value="All">All Priorities</option>
-        <option
-          v-for="priority in PRIORITIES"
-          :key="priority"
-          :value="priority"
+    <div
+      class="md:col-span-6 flex gap-4"
+      role="group"
+      aria-label="Task filters"
+    >
+      <div class="flex-1">
+        <label id="status-filter-label" class="sr-only">Filter by status</label>
+        <select
+          :value="selectedStatus"
+          @change="handleStatusChange"
+          class="select select-bordered w-full"
+          aria-labelledby="status-filter-label"
         >
-          {{ priority }}
-        </option>
-      </select>
+          <option value="All">All Status</option>
+          <option v-for="status in STATUSES" :key="status" :value="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+
+      <div class="flex-1">
+        <label id="priority-filter-label" class="sr-only"
+          >Filter by priority</label
+        >
+        <select
+          :value="selectedPriority"
+          @change="handlePriorityChange"
+          class="select select-bordered w-full"
+          aria-labelledby="priority-filter-label"
+        >
+          <option value="All">All Priorities</option>
+          <option
+            v-for="priority in PRIORITIES"
+            :key="priority"
+            :value="priority"
+          >
+            {{ priority }}
+          </option>
+        </select>
+      </div>
     </div>
   </div>
 </template>

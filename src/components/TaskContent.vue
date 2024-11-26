@@ -1,16 +1,25 @@
 <template>
-  <div class="bg-base-100 rounded-box shadow-lg p-6">
+  <div
+    class="bg-base-100 rounded-box shadow-lg p-6"
+    role="main"
+    aria-labelledby="task-title"
+  >
     <!-- Task Header -->
     <div class="flex justify-between items-start mb-8">
-      <h1 class="text-3xl font-bold">{{ task.title }}</h1>
-      <div class="flex gap-2">
-        <button @click="$emit('edit')" class="btn btn-info btn-outline gap-2">
+      <h1 id="task-title" class="text-3xl font-bold">{{ task.title }}</h1>
+      <div class="flex gap-2" role="toolbar" aria-label="Task actions">
+        <button
+          @click="$emit('edit')"
+          class="btn btn-info btn-outline gap-2"
+          aria-label="Edit task"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               stroke-linecap="round"
@@ -24,6 +33,7 @@
         <button
           @click="$emit('delete')"
           class="btn btn-error btn-outline gap-2"
+          aria-label="Delete task"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -31,6 +41,7 @@
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               stroke-linecap="round"
@@ -45,40 +56,64 @@
     </div>
 
     <!-- Task Details -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
+      role="region"
+      aria-label="Task details"
+    >
       <div class="form-control">
-        <label class="label">
+        <label id="description-label" class="label">
           <span class="label-text font-semibold">Description</span>
         </label>
-        <div class="bg-base-200 rounded-lg p-4">{{ task.description }}</div>
+        <div
+          class="bg-base-200 rounded-lg p-4"
+          role="textbox"
+          aria-labelledby="description-label"
+        >
+          {{ task.description }}
+        </div>
       </div>
 
       <div class="space-y-4">
         <div class="form-control">
-          <label class="label">
+          <label id="status-label" class="label">
             <span class="label-text font-semibold">Status</span>
           </label>
-          <Badge type="status" :value="task.status" />
+          <Badge
+            type="status"
+            :value="task.status"
+            aria-labelledby="status-label"
+          />
         </div>
 
         <div class="form-control">
-          <label class="label">
+          <label id="priority-label" class="label">
             <span class="label-text font-semibold">Priority</span>
           </label>
-          <Badge type="priority" :value="task.priority" />
+          <Badge
+            type="priority"
+            :value="task.priority"
+            aria-labelledby="priority-label"
+          />
         </div>
 
         <div class="form-control">
-          <label class="label">
+          <label id="due-date-label" class="label">
             <span class="label-text font-semibold">Due Date</span>
           </label>
-          <div class="badge badge-lg">{{ formatDate(task.dueDate) }}</div>
+          <div
+            class="badge badge-lg"
+            role="text"
+            aria-labelledby="due-date-label"
+          >
+            {{ formatDate(task.dueDate) }}
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Subtasks Section -->
-    <div class="divider"></div>
+    <div class="divider" role="separator"></div>
     <SubtaskList
       :subtasks="task.subtasks"
       @add="$emit('addSubtask', $event)"

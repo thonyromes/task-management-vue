@@ -1,5 +1,9 @@
 <template>
-  <div class="flex justify-center mt-6">
+  <nav
+    class="flex justify-center mt-6"
+    role="navigation"
+    aria-label="Pagination"
+  >
     <div class="join">
       <!-- Previous Button -->
       <button
@@ -7,6 +11,7 @@
         :class="{ 'btn-disabled': currentPage === 1 }"
         :disabled="currentPage === 1"
         @click="handlePageChange(currentPage - 1)"
+        aria-label="Previous page"
       >
         «
       </button>
@@ -17,12 +22,18 @@
         class="join-item btn"
         :class="{ 'btn-active': currentPage === 1 }"
         @click="handlePageChange(1)"
+        :aria-label="`Go to page 1`"
+        :aria-current="currentPage === 1 ? 'page' : undefined"
       >
         1
       </button>
 
       <!-- Ellipsis if needed -->
-      <button v-if="currentPage > 3" class="join-item btn btn-disabled">
+      <button
+        v-if="currentPage > 3"
+        class="join-item btn btn-disabled"
+        aria-hidden="true"
+      >
         ...
       </button>
 
@@ -31,18 +42,26 @@
         v-if="currentPage > 1"
         class="join-item btn"
         @click="handlePageChange(currentPage - 1)"
+        :aria-label="`Go to page ${currentPage - 1}`"
       >
         {{ currentPage - 1 }}
       </button>
 
       <!-- Current Page -->
-      <button class="join-item btn btn-active">{{ currentPage }}</button>
+      <button
+        class="join-item btn btn-active"
+        aria-current="page"
+        :aria-label="`Current page, page ${currentPage}`"
+      >
+        {{ currentPage }}
+      </button>
 
       <!-- Next Page -->
       <button
         v-if="currentPage < totalPages"
         class="join-item btn"
         @click="handlePageChange(currentPage + 1)"
+        :aria-label="`Go to page ${currentPage + 1}`"
       >
         {{ currentPage + 1 }}
       </button>
@@ -51,6 +70,7 @@
       <button
         v-if="currentPage < totalPages - 2"
         class="join-item btn btn-disabled"
+        aria-hidden="true"
       >
         ...
       </button>
@@ -61,6 +81,8 @@
         class="join-item btn"
         :class="{ 'btn-active': currentPage === totalPages }"
         @click="handlePageChange(totalPages)"
+        :aria-label="`Go to page ${totalPages}`"
+        :aria-current="currentPage === totalPages ? 'page' : undefined"
       >
         {{ totalPages }}
       </button>
@@ -71,11 +93,12 @@
         :class="{ 'btn-disabled': currentPage === totalPages }"
         :disabled="currentPage === totalPages"
         @click="handlePageChange(currentPage + 1)"
+        aria-label="Next page"
       >
         »
       </button>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,19 @@
 <template>
-  <div class="badge badge-lg" :class="badgeClass">
+  <div
+    class="badge badge-lg"
+    :class="badgeClass"
+    role="status"
+    :aria-label="`${type === 'status' ? 'Status' : 'Priority'}: ${label}`"
+  >
     <div class="flex items-center gap-2">
-      <span class="w-3 h-3 rounded-full inline-block" :class="dotClass"></span>
+      <span
+        class="w-3 h-3 rounded-full inline-block"
+        :class="dotClass"
+        aria-hidden="true"
+      ></span>
+      <span class="sr-only"
+        >{{ type === "status" ? "Status" : "Priority" }}:</span
+      >
       {{ label }}
     </div>
   </div>

@@ -6,6 +6,8 @@
       'toast-middle': position === 'middle',
       'toast-bottom': position === 'bottom',
     }"
+    role="status"
+    aria-live="polite"
   >
     <div
       v-for="toast in toasts"
@@ -19,6 +21,8 @@
         'translate-x-0 opacity-100': true,
         'translate-x-full opacity-0': toast.removing,
       }"
+      role="alert"
+      :aria-label="`${toast.type} notification: ${toast.message}`"
     >
       <!-- Success Icon -->
       <svg
@@ -27,6 +31,7 @@
         class="stroke-current shrink-0 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -43,6 +48,7 @@
         class="stroke-current shrink-0 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -59,6 +65,7 @@
         class="stroke-current shrink-0 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -75,6 +82,7 @@
         class="stroke-current shrink-0 h-6 w-6"
         fill="none"
         viewBox="0 0 24 24"
+        aria-hidden="true"
       >
         <path
           stroke-linecap="round"
@@ -89,6 +97,7 @@
       <button
         @click="() => removeToast(toast.id)"
         class="btn btn-ghost btn-sm btn-circle"
+        :aria-label="`Dismiss ${toast.type} notification`"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -96,6 +105,7 @@
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          aria-hidden="true"
         >
           <path
             stroke-linecap="round"

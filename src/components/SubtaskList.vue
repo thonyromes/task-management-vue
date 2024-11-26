@@ -1,25 +1,42 @@
 <template>
-  <div class="subtasks-section">
-    <h2 class="text-2xl font-bold mb-4">Subtasks</h2>
+  <div
+    class="subtasks-section"
+    role="region"
+    aria-labelledby="subtasks-heading"
+  >
+    <h2 id="subtasks-heading" class="text-2xl font-bold mb-4">Subtasks</h2>
 
     <!-- Add Subtask Form -->
-    <form @submit.prevent="handleAddSubtask" class="flex gap-2 mb-4">
+    <form
+      @submit.prevent="handleAddSubtask"
+      class="flex gap-2 mb-4"
+      aria-label="Add new subtask"
+    >
       <input
         v-model="newSubtaskTitle"
         type="text"
         placeholder="New subtask..."
         class="input input-bordered flex-1"
         required
+        aria-label="Subtask title"
       />
-      <button type="submit" class="btn btn-primary">Add Subtask</button>
+      <button type="submit" class="btn btn-primary" aria-label="Add subtask">
+        Add Subtask
+      </button>
     </form>
 
     <!-- Subtasks List -->
-    <div v-if="subtasks.length" class="space-y-2">
+    <div
+      v-if="subtasks.length"
+      class="space-y-2"
+      role="list"
+      aria-label="Subtasks list"
+    >
       <div
         v-for="subtask in subtasks"
         :key="subtask.id"
         class="flex items-center justify-between bg-base-200 rounded-lg p-3"
+        role="listitem"
       >
         <label class="flex items-center gap-3 cursor-pointer">
           <input
@@ -27,14 +44,19 @@
             class="checkbox"
             :checked="subtask.completed"
             @change="$emit('toggle', subtask.id, !subtask.completed)"
+            :aria-label="`Mark ${subtask.title} as ${subtask.completed ? 'incomplete' : 'complete'}`"
           />
-          <span :class="{ 'line-through opacity-50': subtask.completed }">
+          <span
+            :class="{ 'line-through opacity-50': subtask.completed }"
+            :aria-checked="subtask.completed"
+          >
             {{ subtask.title }}
           </span>
         </label>
         <button
           @click="$emit('delete', subtask.id)"
           class="btn btn-ghost btn-sm btn-circle"
+          :aria-label="`Delete subtask: ${subtask.title}`"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -42,6 +64,7 @@
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path
               stroke-linecap="round"

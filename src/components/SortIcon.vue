@@ -2,8 +2,10 @@
   <div
     class="inline-flex items-center transition-opacity duration-200"
     :class="{ 'opacity-30': !isActive }"
+    role="img"
+    :aria-label="`Sort by ${field} ${isActive ? (sortDirection === 'asc' ? 'ascending' : 'descending') : ''}`"
   >
-    <div class="flex flex-col">
+    <div class="flex flex-col" aria-hidden="true">
       <!-- Up Arrow -->
       <svg
         xmlns="http://www.w3.org/2000/svg"
