@@ -25,8 +25,8 @@
       {{ message }}
     </p>
     <button
-      v-if="retryAction"
-      @click="retryAction"
+      v-if="showRetry"
+      @click="$emit('retry')"
       class="btn btn-error mt-4"
       data-testid="retry-button"
     >
@@ -39,11 +39,16 @@
   interface Props {
     title?: string;
     message?: string;
-    retryAction?: () => void;
+    showRetry?: boolean;
   }
 
   withDefaults(defineProps<Props>(), {
     title: "Something went wrong",
     message: "An error occurred while processing your request.",
+    showRetry: true,
   });
+
+  defineEmits<{
+    (e: "retry"): void;
+  }>();
 </script>

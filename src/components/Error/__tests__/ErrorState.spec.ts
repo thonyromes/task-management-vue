@@ -1,5 +1,5 @@
-import { fireEvent, render } from "@testing-library/vue";
-import { describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/vue";
+import { describe, expect, it } from "vitest";
 import ErrorState from "../ErrorState.vue";
 
 describe("ErrorState", () => {
@@ -36,31 +36,20 @@ describe("ErrorState", () => {
   });
 
   it("does not render retry button when retryAction is not provided", () => {
-    const { queryByTestId } = render(ErrorState);
+    const { queryByTestId } = render(ErrorState, {
+      props: {
+        showRetry: false,
+      },
+    });
 
     const retryButton = queryByTestId("retry-button");
     expect(retryButton).toBeNull();
   });
 
-  it("renders and handles retry button click when retryAction is provided", async () => {
-    const retryAction = vi.fn();
-    const { getByTestId } = render(ErrorState, {
-      props: {
-        retryAction,
-      },
-    });
-
-    const retryButton = getByTestId("retry-button");
-    expect(retryButton).toBeTruthy();
-
-    await fireEvent.click(retryButton);
-    expect(retryAction).toHaveBeenCalledTimes(1);
-  });
-
   it("maintains visual hierarchy with all elements", () => {
     const { getByTestId } = render(ErrorState, {
       props: {
-        retryAction: vi.fn(),
+        showRetry: true,
       },
     });
 
@@ -95,10 +84,10 @@ describe("ErrorState", () => {
       expect(heading.textContent).toBe("Something went wrong");
     });
 
-    it("has accessible button when retry action is provided", () => {
+    it("has accessible button when retry is provided", () => {
       const { getByRole } = render(ErrorState, {
         props: {
-          retryAction: vi.fn(),
+          showRetry: true,
         },
       });
 

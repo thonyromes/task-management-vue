@@ -4,8 +4,13 @@
     :class="{ 'opacity-30': !isActive }"
     role="img"
     :aria-label="`Sort by ${field} ${isActive ? (sortDirection === 'asc' ? 'ascending' : 'descending') : ''}`"
+    data-testid="sort-icon-container"
   >
-    <div class="flex flex-col" aria-hidden="true">
+    <div
+      class="flex flex-col"
+      aria-hidden="true"
+      data-testid="arrows-container"
+    >
       <!-- Up Arrow -->
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -14,6 +19,7 @@
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        data-testid="up-arrow"
       >
         <path
           stroke-linecap="round"
@@ -30,6 +36,7 @@
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
+        data-testid="down-arrow"
       >
         <path
           stroke-linecap="round"
@@ -43,16 +50,16 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStore } from "@/stores/taskStore";
-import type { SortableTaskField } from "@/types/task";
-import { computed } from "vue";
+  import { useTaskStore } from "@/stores/taskStore";
+  import type { SortableTaskField } from "@/types/task";
+  import { computed } from "vue";
 
-const props = defineProps<{
-  field: SortableTaskField;
-}>();
+  const props = defineProps<{
+    field: SortableTaskField;
+  }>();
 
-const store = useTaskStore();
+  const store = useTaskStore();
 
-const isActive = computed(() => store.sort.field === props.field);
-const sortDirection = computed(() => store.sort.direction);
+  const isActive = computed(() => store.sort.field === props.field);
+  const sortDirection = computed(() => store.sort.direction);
 </script>

@@ -135,52 +135,52 @@
 </template>
 
 <script setup lang="ts">
-import Badge from "@/components/Badge/Badge.vue";
-import SortIcon from "@/components/Icons/SortIcon.vue";
-import { useTaskStore } from "@/stores/taskStore";
-import type { Task } from "@/types/task";
+  import Badge from "@/components/Badge/Badge.vue";
+  import SortIcon from "@/components/Tasks/SortIcon.vue";
+  import { useTaskStore } from "@/stores/taskStore";
+  import type { Task } from "@/types/task";
 
-type SortableField =
-  | "id"
-  | "title"
-  | "description"
-  | "status"
-  | "priority"
-  | "dueDate";
+  type SortableField =
+    | "id"
+    | "title"
+    | "description"
+    | "status"
+    | "priority"
+    | "dueDate";
 
-interface Column {
-  field: SortableField;
-  label: string;
-  sortable: boolean;
-}
+  interface Column {
+    field: SortableField;
+    label: string;
+    sortable: boolean;
+  }
 
-const store = useTaskStore();
+  const store = useTaskStore();
 
-const columns: Column[] = [
-  { field: "title", label: "Title", sortable: true },
-  { field: "description", label: "Description", sortable: true },
-  { field: "status", label: "Status", sortable: true },
-  { field: "priority", label: "Priority", sortable: true },
-  { field: "dueDate", label: "Due Date", sortable: true },
-];
+  const columns: Column[] = [
+    { field: "title", label: "Title", sortable: true },
+    { field: "description", label: "Description", sortable: true },
+    { field: "status", label: "Status", sortable: true },
+    { field: "priority", label: "Priority", sortable: true },
+    { field: "dueDate", label: "Due Date", sortable: true },
+  ];
 
-defineProps<{
-  tasks: Task[];
-}>();
+  defineProps<{
+    tasks: Task[];
+  }>();
 
-defineEmits<{
-  (e: "sort", field: SortableField): void;
-  (e: "edit", task: Task): void;
-  (e: "delete", id: number): void;
-  (e: "rowClick", id: number): void;
-}>();
+  defineEmits<{
+    (e: "sort", field: SortableField): void;
+    (e: "edit", task: Task): void;
+    (e: "delete", id: number): void;
+    (e: "rowClick", id: number): void;
+  }>();
 
-const getSortDirection = (field: SortableField) => {
-  if (store.sort.field !== field) return undefined;
-  return store.sort.direction === "asc" ? "ascending" : "descending";
-};
+  const getSortDirection = (field: SortableField) => {
+    if (store.sort.field !== field) return undefined;
+    return store.sort.direction === "asc" ? "ascending" : "descending";
+  };
 
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString();
-};
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString();
+  };
 </script>
