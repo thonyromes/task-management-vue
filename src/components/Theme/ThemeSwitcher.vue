@@ -3,6 +3,7 @@
     @click="toggleTheme"
     class="btn btn-ghost btn-circle"
     :aria-label="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
+    data-testid="theme-switcher"
   >
     <!-- Sun icon -->
     <svg
@@ -12,6 +13,7 @@
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
+      data-testid="light-icon"
     >
       <path
         strokeLinecap="round"
@@ -28,6 +30,7 @@
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
+      data-testid="dark-icon"
     >
       <path
         strokeLinecap="round"
