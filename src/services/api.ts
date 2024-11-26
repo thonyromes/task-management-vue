@@ -40,12 +40,6 @@ const mapTodoToTask = (todo: TodoResponse): Task => {
   };
 };
 
-// Update the getTasks response type if needed
-interface TasksResponse {
-  data: Task[];
-  total: number;
-}
-
 // Add this mock data at the top of the file
 const mockSubtasks: Record<number, Subtask[]> = {};
 
