@@ -44,6 +44,11 @@
           <input id="dueDate" v-model="formData.dueDate" type="date" required />
         </div>
 
+        <div v-if="error" class="error-message">
+          {{ error }}
+          <button type="button" @click="retry">Retry</button>
+        </div>
+
         <div class="modal-actions">
           <button type="button" @click="$emit('close')" :disabled="loading">
             Cancel
@@ -93,6 +98,7 @@ const emit = defineEmits<{
   (e: "save", task: TaskFormData): void;
 }>();
 
+const error = ref<string | null>(null);
 const isEdit = !!props.task;
 const formData = ref<TaskFormData>({
   title: "",
@@ -115,7 +121,13 @@ onMounted(() => {
 });
 
 const handleSubmit = () => {
+  error.value = null;
   emit("save", formData.value);
+};
+
+const retry = () => {
+  error.value = null;
+  handleSubmit();
 };
 </script>
 
@@ -190,5 +202,24 @@ button[type="button"] {
 button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.error-message {
+  color: #ef4444;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: #fee2e2;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
 }
 </style>

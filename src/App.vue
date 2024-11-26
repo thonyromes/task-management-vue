@@ -1,9 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Toast from "@/components/Toast.vue";
+</script>
 
 <template>
-  <div class="app">
-    <router-view></router-view>
-  </div>
+  <RouterView />
+  <Toast />
 </template>
 
 <style scoped>

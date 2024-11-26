@@ -90,20 +90,27 @@ export const api = {
   },
 
   async updateTask(task: Task): Promise<Task> {
-    const response = await fetch(`${BASE_URL}/todos/${task.id}`, {
-      method: "PUT",
-      body: JSON.stringify({
-        id: task.id,
-        title: task.title,
-        completed: task.status === "Completed",
-        userId: 1,
-      }),
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-    const todo: TodoResponse = await response.json();
-    return mapTodoToTask(todo);
+    try {
+      const response = await fetch(`${BASE_URL}/todos/${task.id}`, {
+        method: "PUT",
+        body: JSON.stringify(task),
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          response.status === 404 ? "Task not found" : "Failed to update task",
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      throw new Error(
+        error instanceof Error ? error.message : "An unexpected error occurred",
+      );
+    }
   },
 
   async deleteTask(id: number): Promise<void> {

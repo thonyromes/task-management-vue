@@ -172,6 +172,7 @@
 import PriorityBadge from "@/components/PriorityBadge.vue";
 import SortIcon from "@/components/SortIcon.vue";
 import StatusBadge from "@/components/StatusBadge.vue";
+import { useToast } from "@/composables/useToast";
 import { useTaskStore } from "@/stores/taskStore";
 import {
   FilterValue,
@@ -223,6 +224,8 @@ const taskToDelete = ref<number | undefined>(undefined);
 const isDeleting = ref(false);
 const isSaving = ref(false);
 
+const { showToast } = useToast();
+
 const openTaskModal = (task?: Task) => {
   selectedTask.value = task;
   showTaskModal.value = true;
@@ -243,13 +246,15 @@ const handleSaveTask = async (taskData: Partial<Task>) => {
       });
       if (updatedTask) {
         selectedTask.value = updatedTask;
+        showToast("Task updated successfully", "success");
       }
     } else {
       await store.createTask(taskData);
+      showToast("Task created successfully", "success");
     }
     closeTaskModal();
   } catch (error) {
-    console.error("Failed to save task:", error);
+    showToast("Failed to save task. Please try again.", "error");
   } finally {
     isSaving.value = false;
   }
@@ -274,9 +279,10 @@ const confirmDelete = async () => {
     try {
       isDeleting.value = true;
       await store.deleteTask(taskToDelete.value);
+      showToast("Task deleted successfully", "success");
       closeDeleteModal();
     } catch (error) {
-      console.error("Failed to delete task:", error);
+      showToast("Failed to delete task. Please try again.", "error");
     } finally {
       isDeleting.value = false;
     }
