@@ -36,3 +36,10 @@ export interface SortConfig {
 }
 
 export type SortableTaskField = keyof Omit<Task, "subtasks">;
+export type SortableField =
+  | "id"
+  | "title"
+  | "description"
+  | "status"
+  | "priority"
+  | "dueDate";
