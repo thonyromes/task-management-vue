@@ -1,5 +1,4 @@
 import Dashboard from "@/views/Dashboard.vue";
-import TaskDetailsView from "@/views/TaskDetailsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -10,7 +9,7 @@ const router = createRouter({
       name: "dashboard",
       component: Dashboard,
       props: (route) => ({
-        page: Number(route.query.page) || 1,
+        page: route.query.page ? Number(route.query.page) : 1,
         status: route.query.status || "All",
         priority: route.query.priority || "All",
         search: route.query.search || "",
@@ -19,7 +18,7 @@ const router = createRouter({
     {
       path: "/task/:id",
       name: "task-details",
-      component: TaskDetailsView,
+      component: () => import("@/views/TaskDetailsView.vue"),
       props: true,
     },
     {
