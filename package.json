@@ -11,8 +11,6 @@
     "format:check": "prettier --check \"src/**/*.{js,ts,vue,css}\"",
     "lint": "eslint \"src/**/*.{js,ts,jsx,tsx,vue}\" --fix",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:ui": "vitest --ui",
     "type-check": "vue-tsc --noEmit --pretty"
   },
   "dependencies": {
