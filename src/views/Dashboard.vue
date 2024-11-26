@@ -11,23 +11,26 @@
           <div>
             <h1
               id="dashboard-title"
-              class="text-3xl font-bold text-base-content"
+              class="text-xl sm:text-3xl font-bold text-base-content"
               tabindex="-1"
             >
               Task Dashboard
             </h1>
-            <p class="text-base-content/70 mt-1" role="doc-subtitle">
+            <p
+              class="text-sm sm:text-base text-base-content/70 mt-1"
+              role="doc-subtitle"
+            >
               Manage your tasks efficiently
             </p>
           </div>
           <button
             @click="showCreateModal = true"
-            class="btn btn-primary gap-2"
+            class="btn btn-primary btn-sm sm:btn-md gap-1 sm:gap-2"
             aria-label="Create new task"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
+              class="h-4 w-4 sm:h-5 sm:w-5"
               viewBox="0 0 20 20"
               fill="currentColor"
               aria-hidden="true"
@@ -38,7 +41,8 @@
                 clip-rule="evenodd"
               />
             </svg>
-            Create New Task
+            <span class="hidden sm:inline">Create New Task</span>
+            <span class="sm:hidden">New</span>
           </button>
         </div>
       </div>
