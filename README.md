@@ -19,7 +19,15 @@ A modern task management application built with Vue 3, TypeScript, and Vite.
 - Toast notifications
 - Error handling
 - Sorting functionality
-- Component testing setup
+- Search and filter functionality
+- Error handling and recovery mechanisms
+- Responsive design
+- Dark mode
+- Light mode
+- Keyboard navigation
+- Unit testing
+- Fully accessible meeting the requirements of WCAG 2.1 AA
+- Fully typed using TypeScript
 
 ## 🛠️ Tech Stack
 
