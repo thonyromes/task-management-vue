@@ -2,6 +2,16 @@
 
 A modern task management application built with Vue 3, TypeScript, and Vite.
 
+## 🚀 Screenshots
+
+| Light Theme                                     | Dark Theme                                    |
+| ----------------------------------------------- | --------------------------------------------- |
+| ![Light Theme](docs/images/dashboard-light.png) | ![Dark Theme](docs/images/dashboard-dark.png) |
+
+| Task Creation                               | Task Details                                  |
+| ------------------------------------------- | --------------------------------------------- |
+| ![Create Task](docs/images/create-task.png) | ![Task Details](docs/images/task-details.png) |
+
 ## 🚀 Features
 
 - Task listing and management
