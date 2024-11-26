@@ -4,8 +4,10 @@
       <h3>{{ title }}</h3>
       <p>{{ message }}</p>
       <div class="modal-actions">
-        <button @click="$emit('close')">Cancel</button>
-        <button class="confirm" @click="$emit('confirm')">Confirm</button>
+        <button @click="$emit('close')" :disabled="loading">Cancel</button>
+        <button class="confirm" @click="$emit('confirm')" :disabled="loading">
+          {{ loading ? "Deleting..." : "Confirm" }}
+        </button>
       </div>
     </div>
   </div>
@@ -15,6 +17,7 @@
 defineProps<{
   title: string;
   message: string;
+  loading?: boolean;
 }>();
 
 defineEmits<{
@@ -55,6 +58,11 @@ button {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 button.confirm {

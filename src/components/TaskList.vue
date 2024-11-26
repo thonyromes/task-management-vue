@@ -160,6 +160,7 @@
       v-if="showDeleteModal"
       title="Delete Task"
       message="Are you sure you want to delete this task?"
+      :loading="isDeleting"
       @close="closeDeleteModal"
       @confirm="confirmDelete"
     />
@@ -218,6 +219,7 @@ const showTaskModal = ref(false);
 const showDeleteModal = ref(false);
 const selectedTask = ref<Task | undefined>(undefined);
 const taskToDelete = ref<number | undefined>(undefined);
+const isDeleting = ref(false);
 
 const openTaskModal = (task?: Task) => {
   selectedTask.value = task;
@@ -264,8 +266,15 @@ const closeDeleteModal = () => {
 
 const confirmDelete = async () => {
   if (taskToDelete.value !== undefined) {
-    await store.deleteTask(taskToDelete.value);
-    closeDeleteModal();
+    try {
+      isDeleting.value = true;
+      await store.deleteTask(taskToDelete.value);
+      closeDeleteModal();
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    } finally {
+      isDeleting.value = false;
+    }
   }
 };
 
