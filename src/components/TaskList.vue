@@ -277,7 +277,8 @@
 
     <!-- Pagination -->
     <div class="flex justify-center mt-6">
-      <div class="join shadow-lg">
+      <div class="join">
+        <!-- Previous Button -->
         <button
           class="join-item btn"
           :class="{ 'btn-disabled': currentPage === 1 }"
@@ -286,9 +287,62 @@
         >
           «
         </button>
-        <button class="join-item btn btn-neutral">
-          Page {{ currentPage }} of {{ totalPages }}
+
+        <!-- First Page -->
+        <button
+          v-if="currentPage > 2"
+          class="join-item btn"
+          :class="{ 'btn-active': currentPage === 1 }"
+          @click="changePage(1)"
+        >
+          1
         </button>
+
+        <!-- Ellipsis if needed -->
+        <button v-if="currentPage > 3" class="join-item btn btn-disabled">
+          ...
+        </button>
+
+        <!-- Previous Page -->
+        <button
+          v-if="currentPage > 1"
+          class="join-item btn"
+          @click="changePage(currentPage - 1)"
+        >
+          {{ currentPage - 1 }}
+        </button>
+
+        <!-- Current Page -->
+        <button class="join-item btn btn-active">{{ currentPage }}</button>
+
+        <!-- Next Page -->
+        <button
+          v-if="currentPage < totalPages"
+          class="join-item btn"
+          @click="changePage(currentPage + 1)"
+        >
+          {{ currentPage + 1 }}
+        </button>
+
+        <!-- Ellipsis if needed -->
+        <button
+          v-if="currentPage < totalPages - 2"
+          class="join-item btn btn-disabled"
+        >
+          ...
+        </button>
+
+        <!-- Last Page -->
+        <button
+          v-if="currentPage < totalPages - 1"
+          class="join-item btn"
+          :class="{ 'btn-active': currentPage === totalPages }"
+          @click="changePage(totalPages)"
+        >
+          {{ totalPages }}
+        </button>
+
+        <!-- Next Button -->
         <button
           class="join-item btn"
           :class="{ 'btn-disabled': currentPage === totalPages }"
