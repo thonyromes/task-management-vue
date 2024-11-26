@@ -48,15 +48,6 @@ Visit `http://localhost:5173` to view the application.
 - Separate words using hyphens (`-`)
 - Keep names concise and descriptive
 
-## ✅ Pre-Pull Request Checklist
-
-- [ ] Run `yarn format` to format the code
-- [ ] Run `yarn lint` to check for linting errors
-- [ ] Run `yarn test` to verify all tests pass
-- [ ] Run `yarn build` to ensure successful build
-- [ ] Remove all debugging code
-- [ ] Update documentation if necessary
-
 ## 📁 Project Structure
 
 ```
@@ -100,7 +91,7 @@ yarn lint
 
 ## 🔧 IDE Setup
 
-For the best development experience, we recommend using [VS Code](https://code.visualstudio.com/) with the following extensions:
+For the best development experience, I recommend using [VS Code](https://code.visualstudio.com/) with the following extensions:
 
 - Vue Language Features (Volar)
 - TypeScript Vue Plugin (Volar)
