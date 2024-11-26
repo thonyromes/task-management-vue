@@ -4,10 +4,13 @@
     <TaskFilters />
 
     <!-- Loading State -->
-    <div v-if="store.loading" class="flex items-center justify-center p-8">
-      <span class="loading loading-spinner loading-lg text-primary"></span>
-      <span class="ml-3 text-base-content/70">Loading tasks...</span>
-    </div>
+    <LoadingState
+      v-if="store.loading"
+      message="Loading tasks..."
+      spinner-type="spinner"
+      spinner-size="lg"
+      spinner-color="primary"
+    />
 
     <!-- Error State -->
     <ErrorState
@@ -198,6 +201,7 @@
 
 <script setup lang="ts">
 import ErrorState from "@/components/ErrorState.vue";
+import LoadingState from "@/components/LoadingState.vue";
 import NoResults from "@/components/NoResults.vue";
 import SortIcon from "@/components/SortIcon.vue";
 import TaskFilters from "@/components/TaskFilters.vue";
