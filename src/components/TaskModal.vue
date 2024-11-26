@@ -1,71 +1,173 @@
 <template>
-  <div class="modal-overlay" @click="$emit('close')">
-    <div class="modal-content" @click.stop>
-      <h2>{{ task ? "Edit Task" : "Create Task" }}</h2>
-      <form @submit.prevent="handleSubmit">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input id="title" v-model="formData.title" type="text" required />
-        </div>
+  <div class="modal modal-open">
+    <div
+      class="modal-box relative max-w-2xl transform transition-all duration-300"
+      :class="{
+        'scale-100 opacity-100': true,
+        'scale-95 opacity-0': loading,
+      }"
+    >
+      <!-- Close Button -->
+      <button
+        @click="$emit('close')"
+        class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 transition-transform hover:rotate-90"
+        :disabled="loading"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
 
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea
-            id="description"
-            v-model="formData.description"
-            required
-          ></textarea>
-        </div>
+      <!-- Modal Content -->
+      <div class="pt-2">
+        <h3 class="text-2xl font-bold mb-6">
+          {{ task ? "Edit Task" : "Create New Task" }}
+        </h3>
 
-        <div class="form-group">
-          <label for="status">Status</label>
-          <select id="status" v-model="formData.status" required>
-            <option v-for="status in STATUSES" :key="status" :value="status">
-              {{ status }}
-            </option>
-          </select>
-        </div>
+        <form @submit.prevent="handleSubmit" class="space-y-6">
+          <!-- Title Input -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Title</span>
+              <span class="label-text-alt text-error">Required</span>
+            </label>
+            <input
+              v-model="formData.title"
+              type="text"
+              placeholder="Enter task title"
+              class="input input-bordered w-full"
+              :class="{ 'input-disabled': loading }"
+              required
+              :disabled="loading"
+            />
+          </div>
 
-        <div class="form-group">
-          <label for="priority">Priority</label>
-          <select id="priority" v-model="formData.priority" required>
-            <option
-              v-for="priority in PRIORITIES"
-              :key="priority"
-              :value="priority"
+          <!-- Description Input -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Description</span>
+              <span class="label-text-alt text-error">Required</span>
+            </label>
+            <textarea
+              v-model="formData.description"
+              class="textarea textarea-bordered h-24"
+              :class="{ 'textarea-disabled': loading }"
+              placeholder="Enter task description"
+              required
+              :disabled="loading"
+            ></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Status Select -->
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium">Status</span>
+              </label>
+              <select
+                v-model="formData.status"
+                class="select select-bordered w-full"
+                :class="{ 'select-disabled': loading }"
+                required
+                :disabled="loading"
+              >
+                <option
+                  v-for="status in STATUSES"
+                  :key="status"
+                  :value="status"
+                >
+                  {{ status }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Priority Select -->
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium">Priority</span>
+              </label>
+              <select
+                v-model="formData.priority"
+                class="select select-bordered w-full"
+                :class="{ 'select-disabled': loading }"
+                required
+                :disabled="loading"
+              >
+                <option
+                  v-for="priority in PRIORITIES"
+                  :key="priority"
+                  :value="priority"
+                >
+                  {{ priority }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Due Date Input -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Due Date</span>
+              <span class="label-text-alt text-error">Required</span>
+            </label>
+            <input
+              v-model="formData.dueDate"
+              type="date"
+              class="input input-bordered w-full"
+              :class="{ 'input-disabled': loading }"
+              required
+              :disabled="loading"
+            />
+          </div>
+
+          <!-- Modal Actions -->
+          <div class="modal-action">
+            <button
+              type="button"
+              @click="$emit('close')"
+              class="btn btn-ghost transition-all duration-300 hover:scale-105"
+              :class="{ 'opacity-50': loading }"
+              :disabled="loading"
             >
-              {{ priority }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="dueDate">Due Date</label>
-          <input id="dueDate" v-model="formData.dueDate" type="date" required />
-        </div>
-
-        <div v-if="error" class="error-message">
-          {{ error }}
-          <button type="button" @click="retry">Retry</button>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" @click="$emit('close')" :disabled="loading">
-            Cancel
-          </button>
-          <button type="submit" class="primary" :disabled="loading">
-            {{
-              loading
-                ? isEdit
-                  ? "Saving..."
-                  : "Creating..."
-                : isEdit
-                  ? "Save"
-                  : "Create"
-            }}
-          </button>
-        </div>
-      </form>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary gap-2 transition-all duration-300 hover:scale-105"
+              :class="{ loading: loading }"
+              :disabled="loading"
+            >
+              <svg
+                v-if="!loading"
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              {{ task ? "Save Changes" : "Create Task" }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -80,7 +182,17 @@ import {
 } from "@/types/task";
 import { onMounted, ref } from "vue";
 
-interface TaskFormData {
+const props = defineProps<{
+  task?: Task;
+  loading?: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: "close"): void;
+  (e: "save", task: Partial<Task>): void;
+}>();
+
+interface FormData {
   title: string;
   description: string;
   status: TaskStatus;
@@ -88,19 +200,7 @@ interface TaskFormData {
   dueDate: string;
 }
 
-const props = defineProps<{
-  task?: Task | undefined;
-  loading?: boolean;
-}>();
-
-const emit = defineEmits<{
-  (e: "close"): void;
-  (e: "save", task: TaskFormData): void;
-}>();
-
-const error = ref<string | null>(null);
-const isEdit = !!props.task;
-const formData = ref<TaskFormData>({
+const formData = ref<FormData>({
   title: "",
   description: "",
   status: "Pending",
@@ -121,105 +221,6 @@ onMounted(() => {
 });
 
 const handleSubmit = () => {
-  error.value = null;
   emit("save", formData.value);
 };
-
-const retry = () => {
-  error.value = null;
-  handleSubmit();
-};
 </script>
-
-<style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 500px;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 4px;
-}
-
-textarea {
-  height: 100px;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button[type="submit"] {
-  background: #3b82f6;
-  color: white;
-  border: none;
-}
-
-button[type="button"] {
-  background: white;
-  border: 1px solid #e5e7eb;
-}
-
-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: #ef4444;
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background: #fee2e2;
-  border-radius: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.error-message button {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-}
-</style>
