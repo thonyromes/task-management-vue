@@ -1,16 +1,24 @@
 <template>
   <div
-    class="bg-base-100 rounded-box shadow-lg p-6"
+    class="bg-base-100 rounded-box shadow-lg p-4 sm:p-6"
     role="main"
     aria-labelledby="task-title"
   >
     <!-- Task Header -->
-    <div class="flex justify-between items-start mb-8">
-      <h1 id="task-title" class="text-3xl font-bold">{{ task.title }}</h1>
-      <div class="flex gap-2" role="toolbar" aria-label="Task actions">
+    <div
+      class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-8 mb-8"
+    >
+      <h1 id="task-title" class="text-xl sm:text-3xl font-bold break-words">
+        {{ task.title }}
+      </h1>
+      <div
+        class="flex flex-col sm:flex-row gap-2"
+        role="toolbar"
+        aria-label="Task actions"
+      >
         <button
           @click="$emit('edit')"
-          class="btn btn-info btn-outline gap-2"
+          class="btn btn-info btn-outline gap-2 w-full sm:w-auto"
           aria-label="Edit task"
         >
           <svg
@@ -32,7 +40,7 @@
         </button>
         <button
           @click="$emit('delete')"
-          class="btn btn-error btn-outline gap-2"
+          class="btn btn-error btn-outline gap-2 w-full sm:w-auto"
           aria-label="Delete task"
         >
           <svg
@@ -124,27 +132,27 @@
 </template>
 
 <script setup lang="ts">
-import Badge from "@/components/Badge/Badge.vue";
-import SubtaskList from "@/components/Tasks/SubtaskList.vue";
-import type { Task } from "@/types/task";
+  import Badge from "@/components/Badge/Badge.vue";
+  import SubtaskList from "@/components/Tasks/SubtaskList.vue";
+  import type { Task } from "@/types/task";
 
-defineProps<{
-  task: Task;
-}>();
+  defineProps<{
+    task: Task;
+  }>();
 
-const emit = defineEmits<{
-  (e: "edit"): void;
-  (e: "delete"): void;
-  (e: "addSubtask", title: string): void;
-  (e: "toggleSubtask", id: number, completed: boolean): void;
-  (e: "deleteSubtask", id: number): void;
-}>();
+  const emit = defineEmits<{
+    (e: "edit"): void;
+    (e: "delete"): void;
+    (e: "addSubtask", title: string): void;
+    (e: "toggleSubtask", id: number, completed: boolean): void;
+    (e: "deleteSubtask", id: number): void;
+  }>();
 
-const handleToggleSubtask = (id: number, completed: boolean) => {
-  emit("toggleSubtask", id, completed);
-};
+  const handleToggleSubtask = (id: number, completed: boolean) => {
+    emit("toggleSubtask", id, completed);
+  };
 
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString();
-};
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString();
+  };
 </script>
