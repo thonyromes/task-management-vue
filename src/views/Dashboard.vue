@@ -84,7 +84,3 @@ const handleSave = async (taskData: Partial<Task>) => {
   }
 };
 </script>
-
-<style scoped>
-/* Remove existing styles as we're using Tailwind/DaisyUI classes */
-</style>
