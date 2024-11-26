@@ -34,93 +34,15 @@
       <ErrorState v-else-if="error" :message="error" @retry="loadTaskDetails" />
 
       <!-- Task Content -->
-      <div v-else-if="task" class="bg-base-100 rounded-box shadow-lg p-6">
-        <!-- Task Header -->
-        <div class="flex justify-between items-start mb-8">
-          <h1 class="text-3xl font-bold">{{ task.title }}</h1>
-          <div class="flex gap-2">
-            <button @click="handleEdit" class="btn btn-info btn-outline gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
-              </svg>
-              Edit
-            </button>
-            <button
-              @click="handleDelete"
-              class="btn btn-error btn-outline gap-2"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-              Delete
-            </button>
-          </div>
-        </div>
-
-        <!-- Task Details -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text font-semibold">Description</span>
-            </label>
-            <div class="bg-base-200 rounded-lg p-4">{{ task.description }}</div>
-          </div>
-
-          <div class="space-y-4">
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-semibold">Status</span>
-              </label>
-              <Badge type="status" :value="task.status" />
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-semibold">Priority</span>
-              </label>
-              <Badge type="priority" :value="task.priority" />
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text font-semibold">Due Date</span>
-              </label>
-              <div class="badge badge-lg">{{ formatDate(task.dueDate) }}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Subtasks Section -->
-        <div class="divider"></div>
-        <SubtaskList
-          :subtasks="task.subtasks"
-          @add="handleAddSubtask"
-          @toggle="toggleSubtask"
-          @delete="deleteSubtask"
-        />
-      </div>
+      <TaskContent
+        v-else-if="task"
+        :task="task"
+        @edit="handleEdit"
+        @delete="handleDelete"
+        @add-subtask="handleAddSubtask"
+        @toggle-subtask="toggleSubtask"
+        @delete-subtask="deleteSubtask"
+      />
 
       <!-- Modals -->
       <TaskModal
@@ -144,11 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import Badge from "@/components/Badge.vue";
 import ConfirmModal from "@/components/ConfirmModal.vue";
 import ErrorState from "@/components/ErrorState.vue";
 import LoadingState from "@/components/LoadingState.vue";
-import SubtaskList from "@/components/SubtaskList.vue";
+import TaskContent from "@/components/TaskContent.vue";
 import TaskModal from "@/components/TaskModal.vue";
 import { useTaskStore } from "@/stores/taskStore";
 import type { Task } from "@/types/task";
@@ -265,10 +186,6 @@ const deleteSubtask = async (subtaskId: number) => {
   } catch (err) {
     error.value = "Failed to delete subtask";
   }
-};
-
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString();
 };
 
 onMounted(loadTaskDetails);
