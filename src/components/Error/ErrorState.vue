@@ -1,5 +1,9 @@
 <template>
-  <div class="alert alert-error shadow-lg" role="alert" aria-live="assertive">
+  <div
+    class="alert alert-error shadow-lg w-fit mx-auto"
+    role="alert"
+    aria-live="assertive"
+  >
     <div class="flex items-center gap-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -46,11 +50,11 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  message: string;
-}>();
+  defineProps<{
+    message: string;
+  }>();
 
-defineEmits<{
-  (e: "retry"): void;
-}>();
+  defineEmits<{
+    (e: "retry"): void;
+  }>();
 </script>

@@ -12,7 +12,7 @@
     <div
       v-for="toast in toasts"
       :key="toast.id"
-      class="alert shadow-lg transform transition-all duration-300 max-w-md"
+      class="alert shadow-lg transform transition-all duration-300 max-w-md w-fit"
       :class="{
         'alert-success': toast.type === 'success',
         'alert-error': toast.type === 'error',
@@ -120,63 +120,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+  import { ref } from "vue";
 
-export type ToastType = "success" | "error" | "warning" | "info";
-export type ToastPosition = "top" | "middle" | "bottom";
+  export type ToastType = "success" | "error" | "warning" | "info";
+  export type ToastPosition = "top" | "middle" | "bottom";
 
-interface Toast {
-  id: number;
-  message: string;
-  type: ToastType;
-  removing: boolean;
-}
+  interface Toast {
+    id: number;
+    message: string;
+    type: ToastType;
+    removing: boolean;
+  }
 
-interface Props {
-  position?: ToastPosition;
-  duration?: number;
-}
+  interface Props {
+    position?: ToastPosition;
+    duration?: number;
+  }
 
-const props = withDefaults(defineProps<Props>(), {
-  position: "bottom",
-  duration: 3000,
-});
+  const props = withDefaults(defineProps<Props>(), {
+    position: "bottom",
+    duration: 3000,
+  });
 
-let nextId = 0;
-const toasts = ref<Toast[]>([]);
+  let nextId = 0;
+  const toasts = ref<Toast[]>([]);
 
-const addToast = (message: string, type: ToastType = "info") => {
-  const id = nextId++;
-  const toast: Toast = {
-    id,
-    message,
-    type,
-    removing: false,
+  const addToast = (message: string, type: ToastType = "info") => {
+    const id = nextId++;
+    const toast: Toast = {
+      id,
+      message,
+      type,
+      removing: false,
+    };
+
+    toasts.value.push(toast);
+
+    // Start removal process after duration
+    setTimeout(() => {
+      removeToast(id);
+    }, props.duration);
   };
 
-  toasts.value.push(toast);
+  const removeToast = (id: number) => {
+    const toast = toasts.value.find((t) => t.id === id);
+    if (toast) {
+      // Start removal animation
+      toast.removing = true;
 
-  // Start removal process after duration
-  setTimeout(() => {
-    removeToast(id);
-  }, props.duration);
-};
+      // Remove from array after animation
+      setTimeout(() => {
+        toasts.value = toasts.value.filter((t) => t.id !== id);
+      }, 300); // Match the duration in the transition class
+    }
+  };
 
-const removeToast = (id: number) => {
-  const toast = toasts.value.find((t) => t.id === id);
-  if (toast) {
-    // Start removal animation
-    toast.removing = true;
-
-    // Remove from array after animation
-    setTimeout(() => {
-      toasts.value = toasts.value.filter((t) => t.id !== id);
-    }, 300); // Match the duration in the transition class
-  }
-};
-
-// Expose methods for external use
-defineExpose({
-  addToast,
-});
+  // Expose methods for external use
+  defineExpose({
+    addToast,
+  });
 </script>

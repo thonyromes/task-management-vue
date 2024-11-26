@@ -48,7 +48,7 @@
 
         <!-- Warning Icon and Message -->
         <div
-          class="alert alert-warning mb-6 transition-all duration-300"
+          class="alert alert-warning mb-6 transition-all duration-300 w-fit mx-auto"
           :class="{ 'animate-pulse': loading }"
           role="alert"
           id="modal-message"
@@ -117,57 +117,57 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+  import { onMounted, ref } from "vue";
 
-defineProps<{
-  title: string;
-  message: string;
-  loading?: boolean;
-}>();
+  defineProps<{
+    title: string;
+    message: string;
+    loading?: boolean;
+  }>();
 
-const emit = defineEmits<{
-  (e: "close"): void;
-  (e: "confirm"): void;
-}>();
+  const emit = defineEmits<{
+    (e: "close"): void;
+    (e: "confirm"): void;
+  }>();
 
-const modalTitle = ref<HTMLElement | null>(null);
+  const modalTitle = ref<HTMLElement | null>(null);
 
-const handleConfirm = () => {
-  emit("confirm");
-};
+  const handleConfirm = () => {
+    emit("confirm");
+  };
 
-// Focus management
-onMounted(() => {
-  // Focus the modal title when opened
-  modalTitle.value = document.getElementById("modal-title");
-  if (modalTitle.value) {
-    modalTitle.value.focus();
-  }
-
-  // Trap focus within modal
-  const handleTab = (e: KeyboardEvent) => {
-    if (e.key === "Tab") {
-      const focusableElements = document.querySelectorAll(
-        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
-      const firstFocusable = focusableElements[0] as HTMLElement;
-      const lastFocusable = focusableElements[
-        focusableElements.length - 1
-      ] as HTMLElement;
-
-      if (e.shiftKey && document.activeElement === firstFocusable) {
-        e.preventDefault();
-        lastFocusable.focus();
-      } else if (!e.shiftKey && document.activeElement === lastFocusable) {
-        e.preventDefault();
-        firstFocusable.focus();
-      }
+  // Focus management
+  onMounted(() => {
+    // Focus the modal title when opened
+    modalTitle.value = document.getElementById("modal-title");
+    if (modalTitle.value) {
+      modalTitle.value.focus();
     }
-  };
 
-  document.addEventListener("keydown", handleTab);
-  return () => {
-    document.removeEventListener("keydown", handleTab);
-  };
-});
+    // Trap focus within modal
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key === "Tab") {
+        const focusableElements = document.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        const firstFocusable = focusableElements[0] as HTMLElement;
+        const lastFocusable = focusableElements[
+          focusableElements.length - 1
+        ] as HTMLElement;
+
+        if (e.shiftKey && document.activeElement === firstFocusable) {
+          e.preventDefault();
+          lastFocusable.focus();
+        } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+          e.preventDefault();
+          firstFocusable.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleTab);
+    return () => {
+      document.removeEventListener("keydown", handleTab);
+    };
+  });
 </script>
